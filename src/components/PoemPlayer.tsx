@@ -166,7 +166,7 @@ const PoemPlayer: React.FC = () => {
         <p className="text-sm text-gray-700">
           Click "Start Reciting" and speak the words of the poem. 
           Each word will highlight as you say it! When you finish the poem, 
-          you'll see a celebration.
+          you'll see a celebration!!
         </p>
       </motion.div>
     </div>

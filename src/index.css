@@ -108,3 +108,60 @@ body {
 .card-inner-shadow {
   box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.4);
 }
+
+/* Cute highlighted and spoken word animations */
+.spoken {
+  color: var(--text-subdued); /* Soft color */
+  font-weight: 600; /* Slightly bold */
+  transition: all 0.3s ease-in-out;
+  text-shadow: 0 0 6px rgba(255, 200, 221, 0.4); /* Soft pink glow */
+}
+
+.highlighted {
+  color: var(--text-positive); /* Bright green */
+  background: rgba(255, 200, 221, 0.2); /* Soft pink background */
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-weight: 700; /* Bold for emphasis */
+  animation: bounceGlow 0.6s ease-in-out infinite alternate; /* Bounce animation */
+  box-shadow: 0 0 10px rgba(255, 175, 204, 0.7); /* Glowing effect */
+}
+
+/* Bouncing and glowing effect for current spoken word */
+@keyframes bounceGlow {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 5px rgba(255, 175, 204, 0.5);
+  }
+  100% {
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(255, 175, 204, 0.8);
+  }
+}
+
+/* Optional: add sparkles after the spoken word for a whimsical touch */
+.poem-text .spoken::after {
+  content: " ✨";
+  font-size: 0.8rem;
+  color: #ffafcc;
+  transition: transform 0.3s ease-in-out;
+}
+
+.poem-text .highlighted::after {
+  content: " ✨";
+  font-size: 0.8rem;
+  color: #ffafcc;
+  animation: sparkleAnimation 1s infinite ease-in-out;
+}
+
+@keyframes sparkleAnimation {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.2);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}

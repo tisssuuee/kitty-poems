@@ -85,7 +85,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.15 }}
             >
-              {poem.author || 'Unknown Author'}
+              {poem.author || 'Tissue <3'}
             </motion.p>
           </div>
           
@@ -114,7 +114,27 @@ const PoemCard: React.FC<PoemCardProps> = ({
               animate={{ opacity: 1 }}
               className="space-y-4"
             >
-              <p className="poem-text">{poem.content}</p>
+              <p className="poem-text whitespace-pre-line">
+                {poem.content.split(' ').map((word, index) => {
+                  const cleanWord = word.replace(/[.,!?;:]/, '').toLowerCase();
+                  const isSpoken = spokenWords.includes(cleanWord);
+                  const isCurrentWord = isActive && cleanWord === spokenWords[spokenWords.length - 1];
+                  
+                  return (
+                    <span 
+                      key={index}
+                      className={`
+                        inline-block
+                        ${isSpoken ? 'spoken' : ''}
+                        ${isCurrentWord ? 'highlighted' : ''}
+                      `}
+                    >
+                      {word}
+                      {index < poem.content.split(' ').length - 1 ? ' ' : ''}
+                    </span>
+                  );
+                })}
+              </p>
               <motion.div 
                 className="flex justify-center mt-4"
                 initial={{ scale: 0 }}

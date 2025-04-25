@@ -18,7 +18,7 @@ function App() {
         <motion.div
           initial={{ y: 0, scale: 1 }}
           animate={{ y: -100, scale: 0.5 }}
-          transition={{ duration: 1, delay: 1 }}
+          transition={{ duration: 1, delay: 5 }}
           className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-gray-800">Poems for my cutu patootie</h1>
