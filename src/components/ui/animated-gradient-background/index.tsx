@@ -66,7 +66,6 @@ export const AnimatedBackground = ({ children }: PropsWithChildren) => {
       <div className="fixed top-0 left-0 size-full z-20" draggable="false">
         {children}
       </div>
-      <KittyDecoration />
     </div>
   )
 }

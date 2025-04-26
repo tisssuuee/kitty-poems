@@ -6,12 +6,13 @@ export const ThemeSwitcher = () => {
 
   useEffect(() => {
     const isDark = localStorage.theme === "dark" ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
     setIsDarkMode(isDark);
     document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
-  function toggleTheme() {
+  const toggleTheme = () => {
     const toggledTheme = !isDarkMode;
     setIsDarkMode(toggledTheme);
     localStorage.theme = toggledTheme ? "dark" : "light";

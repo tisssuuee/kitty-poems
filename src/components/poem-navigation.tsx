@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Poem } from '../data/poems';
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 interface PoemNavigationProps {
   poems: Poem[];
@@ -28,37 +29,31 @@ const PoemNavigation: React.FC<PoemNavigationProps> = ({
   return (
     <div className="flex items-center justify-between max-w-md mx-auto mt-8">
       <motion.button
-        className={`p-2 rounded-full bg-white bg-opacity-80 shadow-kitty text-kitty-pink-dark
+        className={`p-2 rounded bg-white bg-opacity-80 shadow-kitty text-kitty-pink-dark
                    ${currentPoemIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-kitty-pink-light'}`}
-        whileHover={currentPoemIndex > 0 ? { scale: 1.1 } : {}}
-        whileTap={currentPoemIndex > 0 ? { scale: 0.95 } : {}}
         onClick={handlePrevious}
         disabled={currentPoemIndex === 0}
       >
-        prev
+        <IoIosArrowBack />
       </motion.button>
 
-      <div className="flex space-x-1">
+      <div className="flex space-x-2">
         {poems.map((poem, index) => (
           <motion.button
             key={poem.id}
-            className={`w-3 h-3 rounded-full ${currentPoemIndex === index ? `bg-kitty-${poems[currentPoemIndex].color}` : 'bg-white bg-opacity-50'}`}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.95 }}
+            className={`w-3 h-3 rounded-full ${currentPoemIndex === index ? `bg-[#f77fbe] ` : 'bg-white bg-opacity-50'}`}
             onClick={() => onChangePoemIndex(index)}
           />
         ))}
       </div>
 
       <motion.button
-        className={`p-2 rounded-full bg-white bg-opacity-80 shadow-kitty text-kitty-pink-dark
+        className={`p-2 rounded bg-white bg-opacity-80  shadow-kitty text-kitty-pink-dark
                    ${currentPoemIndex === poems.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-kitty-pink-light'}`}
-        whileHover={currentPoemIndex < poems.length - 1 ? { scale: 1.1 } : {}}
-        whileTap={currentPoemIndex < poems.length - 1 ? { scale: 0.95 } : {}}
         onClick={handleNext}
         disabled={currentPoemIndex === poems.length - 1}
       >
-        next
+        <IoIosArrowForward />
       </motion.button>
     </div>
   );

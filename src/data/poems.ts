@@ -53,7 +53,7 @@ You held my hand — that was enough.
 We wished on stars, we dreamed out loud,  
 Two souls who made each other proud.`,
     color: "sunsetgold",
-    image: "https://images.pexels.com/photos/2611022/pexels-photo-2611022.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: "https://images.pexels.com/photos/31767431/pexels-photo-31767431/free-photo-of-woman-in-white-dress-by-the-ocean-shore.jpeg",
     audio: "/audio/seashore-secrets.mp3"
   },
   {

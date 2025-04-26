@@ -6,6 +6,7 @@ export default {
     extend: {
       fontFamily: {
         funnel: ['"Funnel Display"', 'sans-serif'],
+        borel: ['"Borel"', 'cursive'],
       },
     }
   },
