@@ -44,7 +44,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
 
           <div className="flex-1 min-w-0">
             <motion.h2
-              className="text-lg font-bold font-funnel text-white truncate"
+              className="text-lg text-gray-800 font-bold font-funnel dark:text-white truncate"
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
@@ -52,7 +52,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
               {poem.title}
             </motion.h2>
             <motion.p
-              className="text-sm text-neutral-900 font-borel dark:text-neutral-300"
+              className="text-sm text-neutral-700 font-borel dark:text-neutral-300"
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.15 }}
@@ -87,7 +87,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
           }}
         >
           <pre
-            className="font-borel py-2 text-xl dark:text-white drop-shadow-sm"
+            className="font-borel py-2 text-xl text-gray-800 dark:text-white drop-shadow-sm"
             style={{
               lineHeight: '1.6',
               letterSpacing: '0.01em',
