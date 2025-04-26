@@ -35,7 +35,7 @@ const PoemNavigation: React.FC<PoemNavigationProps> = ({
         onClick={handlePrevious}
         disabled={currentPoemIndex === 0}
       >
-        left
+        prev
       </motion.button>
 
       <div className="flex space-x-1">
@@ -58,7 +58,7 @@ const PoemNavigation: React.FC<PoemNavigationProps> = ({
         onClick={handleNext}
         disabled={currentPoemIndex === poems.length - 1}
       >
-        right
+        next
       </motion.button>
     </div>
   );

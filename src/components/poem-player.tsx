@@ -1,12 +1,13 @@
+// src/components/poem-player.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { poems } from '../data/poems';
-import PoemCard from './PoemCard';
-import PoemNavigation from './PoemNavigation';
+import PoemCard from './poem-card';
+import PoemNavigation from './poem-navigation';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
 import useSound from 'use-sound';
 
-// Import sound effects
+// Sound effects
 const successSoundUrl = 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3';
 const clickSoundUrl = 'https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3';
 
@@ -19,28 +20,20 @@ const PoemPlayer: React.FC = () => {
     startListening,
     stopListening,
     resetRecognition,
-    error
+    error,
   } = useSpeechRecognition();
 
-  // Sound effects
   const [playSuccess] = useSound(successSoundUrl, { volume: 0.5 });
   const [playClick] = useSound(clickSoundUrl, { volume: 0.3 });
 
-  // Get current poem
   const currentPoem = poems[currentPoemIndex];
 
-  // Check if poem is complete
   useEffect(() => {
     if (isListening && !recitationComplete) {
       const poemWords = currentPoem.content.split(' ').map(word =>
         word.replace(/[.,!?;:]/, '').toLowerCase()
       );
-
-      // Check if all words in the poem have been spoken
-      const allWordsSpoken = poemWords.every(word =>
-        spokenWords.includes(word)
-      );
-
+      const allWordsSpoken = poemWords.every(word => spokenWords.includes(word));
       if (allWordsSpoken) {
         setRecitationComplete(true);
         stopListening();
@@ -49,7 +42,6 @@ const PoemPlayer: React.FC = () => {
     }
   }, [currentPoem, spokenWords, isListening, recitationComplete, stopListening, playSuccess]);
 
-  // Handle poem change
   const handleChangePoemIndex = useCallback((newIndex: number) => {
     playClick();
     setCurrentPoemIndex(newIndex);
@@ -57,7 +49,6 @@ const PoemPlayer: React.FC = () => {
     resetRecognition();
   }, [playClick, resetRecognition]);
 
-  // Handle start recitation
   const handleStartRecitation = useCallback(() => {
     playClick();
     setRecitationComplete(false);
@@ -65,13 +56,11 @@ const PoemPlayer: React.FC = () => {
     startListening();
   }, [playClick, resetRecognition, startListening]);
 
-  // Handle stop recitation
   const handleStopRecitation = useCallback(() => {
     playClick();
     stopListening();
   }, [playClick, stopListening]);
 
-  // Handle reset
   const handleReset = useCallback(() => {
     playClick();
     setRecitationComplete(false);
@@ -80,12 +69,16 @@ const PoemPlayer: React.FC = () => {
 
   return (
     <div className="poem-player">
-      <PoemCard
-        poem={currentPoem}
-        isActive={true}
-        spokenWords={spokenWords}
-        recitationComplete={recitationComplete}
-      />
+      {currentPoem ? (
+        <PoemCard
+          poem={currentPoem}
+          isActive={true}
+          spokenWords={spokenWords}
+          recitationComplete={recitationComplete}
+        />
+      ) : (
+        <p>No poem available</p>
+      )}
 
       <div className="controls flex justify-center mt-6">
         <motion.div
