@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Poem } from '../data/poems';
 
 interface PoemNavigationProps {
@@ -9,10 +8,10 @@ interface PoemNavigationProps {
   onChangePoemIndex: (index: number) => void;
 }
 
-const PoemNavigation: React.FC<PoemNavigationProps> = ({ 
-  poems, 
-  currentPoemIndex, 
-  onChangePoemIndex 
+const PoemNavigation: React.FC<PoemNavigationProps> = ({
+  poems,
+  currentPoemIndex,
+  onChangePoemIndex
 }) => {
   const handlePrevious = () => {
     if (currentPoemIndex > 0) {
@@ -36,9 +35,9 @@ const PoemNavigation: React.FC<PoemNavigationProps> = ({
         onClick={handlePrevious}
         disabled={currentPoemIndex === 0}
       >
-        <ChevronLeft size={24} />
+        left
       </motion.button>
-      
+
       <div className="flex space-x-1">
         {poems.map((poem, index) => (
           <motion.button
@@ -50,7 +49,7 @@ const PoemNavigation: React.FC<PoemNavigationProps> = ({
           />
         ))}
       </div>
-      
+
       <motion.button
         className={`p-2 rounded-full bg-white bg-opacity-80 shadow-kitty text-kitty-pink-dark
                    ${currentPoemIndex === poems.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-kitty-pink-light'}`}
@@ -59,7 +58,7 @@ const PoemNavigation: React.FC<PoemNavigationProps> = ({
         onClick={handleNext}
         disabled={currentPoemIndex === poems.length - 1}
       >
-        <ChevronRight size={24} />
+        right
       </motion.button>
     </div>
   );
