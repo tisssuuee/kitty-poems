@@ -1,62 +1,55 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Header from './components/Header';
-import PoemPlayer from './components/PoemPlayer';
-import KittyDecoration from './components/KittyDecoration';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ThemeSwitcher } from './components/theme-switcher';
+import { AnimatedBackground } from './components/ui/animated-gradient-background';
+import PoemPlayer from './components/poem-player';
+import KittyDecoration from './components/kitty-decoration';
+import ErrorBoundary from './components/ErrorBoundary';
+import { SplashScreen } from './components/ui/splash-screen';
+import { Header } from './components/ui/header';
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <motion.div 
-      className="min-h-screen pb-20 relative bg-lavender"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Header />
-      
-      <main className="container mx-auto px-4 pt-8">
-        <motion.div
-          initial={{ y: 0, scale: 1 }}
-          animate={{ y: -100, scale: 0.5 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-center mb-8"
-        >
-          <h1 className="text-4xl font-bold text-gray-800">Poems for my cutu patootie</h1>
-        </motion.div>
+    <ErrorBoundary>
+      <AnimatePresence mode="wait">
+        {showSplash ? (
+          <SplashScreen />
+        ) : (
+          <AnimatedBackground>
+            <motion.div
+              key="main"
+              className="min-h-screen relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="relative min-h-screen">
+                <div className="absolute dark:text-white top-12 right-12">
+                  <ThemeSwitcher />
+                </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 2.5 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-6xl font-bold" style={{ color: '#FF69B4' }}>Riyuuuu</h2>
-        </motion.div>
+                <main className="container mx-auto px-4 pt-8 pb-20">
+                  <Header />
+                  <PoemPlayer />
+                </main>
 
-        <div className="flex justify-between items-center mb-12">
-          <motion.img
-            src="https://i.pinimg.com/736x/d6/fe/93/d6fe93c164eecbf9857982aa7d309ab3.jpg"
-            alt="Hello Kitty"
-            className="w-32 h-32 object-contain"
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 2 }}
-          />
-          <motion.img
-            src="https://i.pinimg.com/736x/d6/fe/93/d6fe93c164eecbf9857982aa7d309ab3.jpg"
-            alt="Hello Kitty"
-            className="w-32 h-32 object-contain"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 2 }}
-          />
-        </div>
-
-        <PoemPlayer />
-      </main>
-      
-      <KittyDecoration />
-    </motion.div>
+                <KittyDecoration />
+              </div>
+            </motion.div>
+          </AnimatedBackground>
+        )}
+      </AnimatePresence>
+    </ErrorBoundary>
   );
 }
 
