@@ -32,7 +32,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
         <div className="flex items-start gap-3 relative z-10">
           <motion.div
             className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 relative group cursor-pointer"
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 4.8 }}
           >
             <img
               src={poem.image}
@@ -74,12 +74,11 @@ const PoemCard: React.FC<PoemCardProps> = ({
         </div>
 
         <motion.div
-          className="mt-4 bg-white/20 dark:bg-black/20  backdrop-blur-sm  rounded-md p-3 relative z-10"
+          className="mt-4 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded-md p-3 relative z-10"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
           style={{
-            // backgroundImage: `url(${poem.image})`,
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
@@ -87,11 +86,15 @@ const PoemCard: React.FC<PoemCardProps> = ({
           }}
         >
           <pre
-            className="font-borel py-2 text-xl text-gray-800 dark:text-white drop-shadow-sm"
+            className="py-2 text-gray-800 dark:text-white drop-shadow-sm"
             style={{
-              lineHeight: '1.6',
+              fontFamily: 'Georgia, serif', // Updated font family
+              fontSize: '1rem', // Updated font size (16px)
+              lineHeight: '1.3',
               letterSpacing: '0.01em',
               wordSpacing: '0.05em',
+              whiteSpace: 'pre-wrap',
+              overflowX: 'auto',
             }}
           >
             {poem.content}
