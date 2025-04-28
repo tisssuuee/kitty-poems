@@ -17,7 +17,7 @@ const PoemPlayer: React.FC = () => {
   }
 
   return (
-    <div className="max-w-[50rem] min-h-[35rem] relative mx-auto">
+    <div className="max-w-[50rem] min-h-[35rem] mx-auto">
       {currentPoem ? (
         <PoemCard
           poem={currentPoem}
@@ -27,7 +27,7 @@ const PoemPlayer: React.FC = () => {
         <p>No poem available</p>
       )}
 
-      <div className='absolute w-full bottom-0 '>
+      <div className='absolute w-full left-0 bottom-0 '>
         <PoemNavigation
           poems={poems}
           currentPoemIndex={currentPoemIndex}

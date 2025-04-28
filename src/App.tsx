@@ -38,7 +38,7 @@ function App() {
                   <ThemeSwitcher />
                 </div>
 
-                <main className="container mx-auto px-4 pt-8 pb-20">
+                <main className="container mx-auto relative px-4 pt-8 pb-20">
                   <Header />
                   <PoemPlayer />
                 </main>
