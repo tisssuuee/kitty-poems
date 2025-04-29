@@ -178,10 +178,81 @@ hasti hai boht zada mujhe tera hasna boht pasand hai, mein bhi kabhi kabhi terek
 
   aur mein thehra clingy, par mein puri koshish karta hun ki apko waqt dun aur meri Pyaariya vapis aa jaye par humesha koshish karta hun ki aap full nonverbal naa jaayein kyonki fir it feels to me,
   ki i cant be next to you in battles that you are chosing for yourself haan apki ladaiyan hain vo par mein hun apka chota sa pyaala sa junior commander mujhe bhi maukaa do dushman ke chakke chudaaaane kaa
-  
+
   I'd just say i'm always here but never required, my girl is just too overpowered with gods own strength hahhaha, she be godess herself ;)`,
     color: "sandgold",
     image: "/image/15.jpeg",
+    audio: "/audio/desert-dawn.mp3"
+  },
+  {
+    id: 14,
+    title: "our MOU",
+    content: `tere khayaal aatein hain, ache ache khayal, tu boht pyaari hai par rude bhi kabhi kabhi, meri calls nahi uthati hai kabhi kabhi, mood swings tere mashallah, 
+  choti si bacchi hai tu pyaari si ladaku si cutie si, boht ziddi bhi par meri hai meri pyaari kittu Riya. Mujhe nahi pata kabhi kabhi apko kya hojata hai aapko time chhaiye hota hai, lone time,
+
+
+Hers --   @riyavdutta (The ruder one)
+Koenigsegg cc850,  Bugatti Chiron,  3BHK in Bombay,   Flaars for life,   World Trips,   Princess Treatment(unwanted unasked but receiving plethora of loll)
+
+Him --   @tushar._xo (The Demander/Begger)
+Porsche 918 Spyder - (baby blue),   Her about to be ex-iPad & Iphone 12 purpleyyy,  Sony Headphones,   Ghar pe bulana, Muma papa se milwana.,   A freer more independent girl Boss You.,   Trying to understand you and always being there for you unconditionally.
+Trips - (Europe- by train/car, Canada/US, South Korea, Kerala, Kinnaur, Amritsar, Delhi, Australia) Some extras by “over karne wala” Me - College milne aana, Train mein ikathe ghar vaapis ana)
+`,
+    color: "sandgold",
+    image: "/image/18.png",
+    audio: "/audio/desert-dawn.mp3"
+  },
+  {
+    id: 15,
+    title: "The Email - 31st Oct 2023",
+    content: `I only ever wanted to be by your side, maybe best case hold hands, but just listen to you every day, and see how you slowly opened up to me. I wish we had visited that Gurudwara and that I had seen you in silhouette of the holy shrine. I wish I had just held you longer and picked you up on that last hug outside the hotel at 11 in the night. And if I didn't love you sincerely, I would have never told my mumma about you. 
+I constantly wish for your wellness, you never left my mind, you never left my prayers. Aur fir chal diye tum kahan hum kahan, but this guy never really was able to detach himself from the person he met on his 20th birthday.
+
+I'm really sorry for everything, just everything. It's just that I literally liked you so much. I'm sorry. 
+
+I was in Udaipur for 3 days between October 20th and October 23rd. I just want to see Udaipur again, holding your hand, I really do. Attaching a few attachments from Udaipur.
+
+I seek you through my thoughts. I click images, thinking, yeh usko bhejta, usko yeh pasand aatin. These bangles, those earrings, yeh jhanjhar voh kurti.
+
+I've turned into an image of the guy I once was. Idk if you can relate to a person blasting Kabira in full volume on headphones and walking alone in silence at 3 a.m. on a moonlit passage.
+
+I miss you. And these words aren't enough; I was never able to express myself like you did.
+This emptiness, this numbness, and this void. This feeling of something being absent. This Aditya in his financial best wondering how her Geet is doing in Manali. 
+No contacts.
+I feel aadha aadha, kisko bataun, muma se kya kahun.
+I miss your voice 
+I miss your rants
+I miss you roasting me dead
+Mene itna hurt kardiya kya?
+Meko maaf kardo 
+I regret never coming back to Hamipur to see you again
+I regret never meeting your muma papa
+I regret I became someone to you, you never again wanna be in touch with
+What is this constant delulu
+In which I seek your presence, a place I used to feel the safest.
+I miss my RIRU.`,
+    color: "sandgold",
+    image: "/image/19.jpg",
+    audio: "/audio/desert-dawn.mp3"
+  },
+  {
+    id: 16,
+    title: "(no subject)",
+    content: `
+Riya Dutta <riyavdutta@gmail.com>
+31 Oct 2023, 12:42
+to me
+
+Number de, I deleted it gusse mein.  A mere paragraph cannot summarise what I've been meaning to say to you so I guess I'll settle it with a call. I missed you so much and I'm so happy that you found your way towards me, once again. I'm sorry for hurting you, but I really missed you a lot.
+
+Tushar gautam <tgautam380@gmail.com>
+31 Oct 2023, 12:44
+to Riya
+
+6239684270
+7681954188`,
+    color: "sandgold",
+    image: "/image/20.png",
     audio: "/audio/desert-dawn.mp3"
   }
 ];
