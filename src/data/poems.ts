@@ -143,50 +143,45 @@ vo pyaare roses aur vo dark chocolate blinkit ke bag mein ahahaha, vo letter aur
   },
   {
     id: 11,
-    title: "Meadow Muse",
-    content: `Through meadows green, we spun and swayed,  
-Where wildflowers our secrets laid.  
-Your giggle echoed, free and wild,  
-You’re joy itself, my inner child.  
-  
-The breeze would lift your hair with glee,  
-Each moment carved eternity.  
-In fields of green, my heart’s your own,  
-With you, I’ve found my truest home.`,
-    color: "meadowgreen",
-    image: "https://images.pexels.com/photos/459879/pexels-photo-459879.jpeg?auto=compress&cs=tinysrgb&w=600",
-    audio: "/audio/meadow-muse.mp3"
-  },
-  {
-    id: 12,
-    title: "Snowflake Waltz",
-    content: `In winter’s hush, we twirled through snow,  
-Each flake a star in evening’s glow.  
-Your mittened hand held mine so tight,  
-We danced beneath the frosted light.  
-  
-Your cheeks were flushed, your eyes so bright,  
-You made the cold feel warm and right.  
-In snow’s soft fall, our love would sing,  
-A waltz to last through every spring.`,
+    title: "I remember",
+    content: `I still remember how big the smile was on my face the night I returned home after hanging out with you for the first time.
+
+Aapne mujhe bus stand chowr diya tha first i boarded the bus to Nadaun, sarr ghumne laga tha then I took another pill and sar upar karke betha tha, 
+i was just thinking about kya kya hogya aaj i was just i was just hehe haha in my head. fir mein utra nadaun and fir mujje 30 mins tak bus hini mili thi,
+
+fir kaaaafi puchne ke baad mujhe pata laga ki hoshiarpur ki bus aayegi fir i on stood there in bas hope (and your thoughts obv loll), fir bus ayyii,
+meds kicked in and i slept, bohttt zaadi thand thi bhyiii i was shivering, fir meri nini khuli just hoshiarpur pauchte hi, dhundh hi dhund thi,
+
+fir meko mukerian ki bus milgyiii and i sat sabse aage taaki motion sicknees kamm ho par saalaa vo bus wala andhon ke tarah chala raha tha bus full kohree meinn`,
     color: "frostwhite",
-    image: "https://images.pexels.com/photos/773953/pexels-photo-773953.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: "/image/16.jpeg",
     audio: "/audio/snowflake-waltz.mp3"
   },
   {
-    id: 13,
-    title: "Desert Dawn",
-    content: `At desert’s dawn, where sands awake,  
-We watched the sky begin to break.  
-Your voice was soft, a tender hum,  
-My heart would follow where you’d come.  
-  
-The dunes held secrets, vast and wide,  
-But none as true as you beside.  
-In golden light, our souls would soar,  
-With you, I’d wander evermore.`,
+    id: 12,
+    title: "The letter i wrote for my pookie",
+    content: `titled - A love letter?
+mujhe nahi samajh aara tha kya likhun, par fir mene likhna chalu kara aur haan ig i told you about this ki i wrote w pencil first loll, fir stroked pen over it and erased the graphite
+tbh i dont even remember what i wrote in that haan ye yaad hai ki i mentioned many songs idkk kaise se the par i can surely say ki slow karke vo bajte jab tujhe dekhta hun
+
+tu khaas hai yaar, boht zaada khaas hai, unique piece hai ekdum, atpati hai, jaldi dukhi hojati hai aur abhi tak vo bramashtra dhundh nahi paya hun jiss se aapko khush kardun,
+hasti hai boht zada mujhe tera hasna boht pasand hai, mein bhi kabhi kabhi tereko boht zada hansaaa deta hun, hasti hui kya kaatil lagti hai tu, kaash puri zindagi hasa paaun :)`,
     color: "sandgold",
-    image: "https://images.pexels.com/photos/533923/pexels-photo-533923.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: "/image/17.jpeg",
+    audio: "/audio/desert-dawn.mp3"
+  },
+  {
+    id: 13,
+    title: "The Distance",
+    content: `tere khayaal aatein hain, ache ache khayal, tu boht pyaari hai par rude bhi kabhi kabhi, meri calls nahi uthati hai kabhi kabhi, mood swings tere mashallah, 
+  choti si bacchi hai tu pyaari si ladaku si cutie si, boht ziddi bhi par meri hai meri pyaari kittu Riya. Mujhe nahi pata kabhi kabhi apko kya hojata hai aapko time chhaiye hota hai, lone time,
+
+  aur mein thehra clingy, par mein puri koshish karta hun ki apko waqt dun aur meri Pyaariya vapis aa jaye par humesha koshish karta hun ki aap full nonverbal naa jaayein kyonki fir it feels to me,
+  ki i cant be next to you in battles that you are chosing for yourself haan apki ladaiyan hain vo par mein hun apka chota sa pyaala sa junior commander mujhe bhi maukaa do dushman ke chakke chudaaaane kaa
+  
+  I'd just say i'm always here but never required, my girl is just too overpowered with gods own strength hahhaha, she be godess herself ;)`,
+    color: "sandgold",
+    image: "/image/15.jpeg",
     audio: "/audio/desert-dawn.mp3"
   }
 ];
