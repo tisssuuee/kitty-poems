@@ -5,8 +5,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        // Modern Spotify-like fonts
+        'inter': ['Inter', 'system-ui', 'sans-serif'],
+        'poppins': ['Poppins', 'system-ui', 'sans-serif'],
+        'manrope': ['Manrope', 'system-ui', 'sans-serif'],
+        // Original fonts for fallback
         funnel: ['"Funnel Display"', 'sans-serif'],
         borel: ['"Borel"', 'cursive'],
+        // Default system fonts
+        'sans': ['Inter', 'Poppins', 'system-ui', 'sans-serif'],
       },
       animation: {
         'meteor-effect': 'meteor 2s linear infinite',

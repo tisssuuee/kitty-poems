@@ -220,7 +220,7 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
             className="mb-8 relative"
           >
             <motion.h1
-              className="text-5xl md:text-7xl lg:text-8xl font-bold font-funnel tracking-wide leading-tight"
+              className="text-5xl md:text-7xl lg:text-8xl font-bold font-manrope tracking-wide leading-tight"
               style={{
                 background: `
                   linear-gradient(90deg, 
@@ -364,7 +364,7 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
               }}
             >
               <motion.p
-                className="text-white font-funnel font-medium text-base md:text-lg"
+                className="text-white font-inter font-medium text-base md:text-lg"
                 style={{ 
                   filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
                 }}

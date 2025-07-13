@@ -13,13 +13,13 @@ const KittyDecoration: React.FC<KittyDecorationProps> = ({ currentPoem }) => {
   
   return (
     <>
-      {/* Enhanced Kitty decorations with better animations */}
+      {/* Enhanced Kitty decorations with better animations - mobile optimized */}
       <motion.div
-        className="absolute top-8 md:top-32 left-4 md:left-12 w-12 h-12 md:w-16 md:h-16 opacity-80 pointer-events-none"
+        className="absolute top-4 md:top-32 left-2 md:left-12 w-10 h-10 md:w-16 md:h-16 opacity-70 md:opacity-80 pointer-events-none"
         animate={{ 
-          y: [0, -15, 0],
+          y: [0, -12, 0],
           rotate: [0, 5, -5, 0],
-          scale: [1, 1.1, 1]
+          scale: [1, 1.05, 1]
         }}
         transition={{ 
           repeat: Infinity, 
@@ -37,9 +37,9 @@ const KittyDecoration: React.FC<KittyDecorationProps> = ({ currentPoem }) => {
       </motion.div>
 
       <motion.div
-        className="absolute bottom-24 md:bottom-24 right-4 md:right-12 w-16 h-16 md:w-20 md:h-20 opacity-80 pointer-events-none"
+        className="absolute bottom-32 md:bottom-24 right-2 md:right-12 w-12 h-12 md:w-20 md:h-20 opacity-70 md:opacity-80 pointer-events-none"
         animate={{ 
-          y: [0, -20, 0],
+          y: [0, -15, 0],
           rotate: [0, -5, 5, 0],
           scale: [1, 1.05, 1]
         }}
@@ -59,27 +59,25 @@ const KittyDecoration: React.FC<KittyDecorationProps> = ({ currentPoem }) => {
         />
       </motion.div>
 
-      {/* Theme-based floating elements */}
-      {decorativeElements.slice(0, 6).map((element, index) => {
+      {/* Theme-based floating elements - mobile optimized */}
+      {decorativeElements.slice(0, 4).map((element, index) => {
         const positions = [
-          { x: 'left-4 md:left-16', y: 'top-20 md:top-52' },
-          { x: 'right-8 md:right-20', y: 'top-16 md:top-40' },
-          { x: 'left-8 md:left-32', y: 'bottom-16 md:bottom-32' },
-          { x: 'right-4 md:right-8', y: 'bottom-20 md:bottom-48' },
-          { x: 'left-2 md:left-8', y: 'top-32 md:top-80' },
-          { x: 'right-12 md:right-32', y: 'top-24 md:top-64' },
+          { x: 'left-2 md:left-16', y: 'top-16 md:top-52' },
+          { x: 'right-4 md:right-20', y: 'top-12 md:top-40' },
+          { x: 'left-4 md:left-32', y: 'bottom-40 md:bottom-32' },
+          { x: 'right-2 md:right-8', y: 'bottom-44 md:bottom-48' },
         ];
         
         return (
           <motion.div
             key={`${element}-${index}`}
-            className={`absolute ${positions[index]?.x} ${positions[index]?.y} text-lg md:text-2xl pointer-events-none select-none`}
+            className={`absolute ${positions[index]?.x} ${positions[index]?.y} text-sm md:text-2xl pointer-events-none select-none`}
             initial={{ opacity: 0, scale: 0, rotate: -180 }}
             animate={{ 
-              opacity: [0.6, 0.9, 0.6],
-              y: [0, -20, 0],
+              opacity: [0.4, 0.7, 0.4],
+              y: [0, -15, 0],
               rotate: [0, 15, -15, 0],
-              scale: [0.8, 1.2, 0.8]
+              scale: [0.6, 1.0, 0.6]
             }}
             transition={{ 
               repeat: Infinity, 
@@ -99,19 +97,19 @@ const KittyDecoration: React.FC<KittyDecorationProps> = ({ currentPoem }) => {
         );
       })}
 
-      {/* Flowing themed elements that move across the screen */}
+      {/* Flowing themed elements that move across the screen - mobile optimized */}
       <motion.div
-        className="absolute top-1/4 -left-8 text-lg md:text-xl pointer-events-none select-none"
+        className="absolute top-1/4 -left-8 text-sm md:text-xl pointer-events-none select-none opacity-60 md:opacity-100"
         style={{ color: theme?.colors.secondary || '#ffb6c1' }}
         animate={{
           x: ['0vw', '100vw'],
-          y: [0, -20, 0, -10, 0],
+          y: [0, -15, 0, -8, 0],
           rotate: [0, 360],
-          scale: [0.5, 1, 0.5],
+          scale: [0.3, 0.8, 0.3],
         }}
         transition={{
           repeat: Infinity,
-          duration: 15,
+          duration: 20,
           ease: "linear",
           delay: 2,
         }}
@@ -120,19 +118,19 @@ const KittyDecoration: React.FC<KittyDecorationProps> = ({ currentPoem }) => {
       </motion.div>
 
       <motion.div
-        className="absolute top-3/4 -right-8 text-base md:text-lg pointer-events-none select-none"
+        className="absolute top-3/4 -right-8 text-xs md:text-lg pointer-events-none select-none opacity-60 md:opacity-100"
         style={{ color: theme?.colors.accent || '#ff1493' }}
         animate={{
           x: ['0vw', '-100vw'],
-          y: [0, -15, 0, -5, 0],
+          y: [0, -12, 0, -3, 0],
           rotate: [0, -360],
-          scale: [0.3, 0.8, 0.3],
+          scale: [0.2, 0.6, 0.2],
         }}
         transition={{
           repeat: Infinity,
-          duration: 18,
+          duration: 22,
           ease: "linear",
-          delay: 8,
+          delay: 10,
         }}
       >
         {decorativeElements[1]}

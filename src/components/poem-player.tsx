@@ -15,6 +15,7 @@ interface PoemPlayerProps {
 
 const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
   const [currentPoemIndex, setCurrentPoemIndex] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [playClick] = useSound(clickSoundUrl, { volume: 0.3 });
   const [playCelebration] = useSound(celebrationSoundUrl, { volume: 0.4 });
   const confettiRef = useRef<ConfettiRef>(null);
@@ -123,6 +124,8 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
           <PoemCard
             poem={currentPoem}
             isActive={true}
+            isExpanded={isExpanded}
+            setIsExpanded={setIsExpanded}
           />
         </motion.div>
       ) : (
@@ -135,22 +138,24 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
         </motion.p>
       )}
 
-      <motion.div 
-        className='absolute w-full left-0 -bottom-16 md:-bottom-20'
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ 
-          delay: 1, 
-          duration: 0.6,
-          ease: "easeOut"
-        }}
-      >
-        <PoemNavigation
-          poems={poems}
-          currentPoemIndex={currentPoemIndex}
-          onChangePoemIndex={handleChangePoemIndex}
-        />
-      </motion.div>
+      {!isExpanded && (
+        <motion.div 
+          className='absolute w-full left-0 -bottom-16 md:-bottom-20'
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ 
+            delay: 1, 
+            duration: 0.6,
+            ease: "easeOut"
+          }}
+        >
+          <PoemNavigation
+            poems={poems}
+            currentPoemIndex={currentPoemIndex}
+            onChangePoemIndex={handleChangePoemIndex}
+          />
+        </motion.div>
+      )}
     </motion.div>
   );
 };

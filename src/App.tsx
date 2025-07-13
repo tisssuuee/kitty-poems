@@ -91,7 +91,7 @@ function App() {
 
                 <div className="relative min-h-screen z-10">
                   <motion.main 
-                    className="container mx-auto relative px-4 pt-4 md:pt-8 pb-20 z-10"
+                    className="container mx-auto relative px-4 pt-6 md:pt-8 pb-24 md:pb-20 z-10"
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.8 }}

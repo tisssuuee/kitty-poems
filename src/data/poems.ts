@@ -40,14 +40,14 @@ In your laughter, love begins.`,
     theme: {
       name: "Cherry Blossom Spring",
       colors: {
-        primary: "#ff69b4",
-        secondary: "#ffb6c1", 
-        accent: "#ff1493",
-        background: "linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffcce5 100%)",
-        text: "#8b4567",
-        card: "rgba(255, 182, 193, 0.8)"
+        primary: "#e91e63",
+        secondary: "#f48fb1", 
+        accent: "#ad1457",
+        background: "linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%)",
+        text: "#880e4f",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#ff69b4", "#ffb6c1", "#ffe4e1", "#fff0f5"],
+      gradient: ["#e91e63", "#f48fb1", "#f8bbd9", "#fce4ec"],
       emojis: ["🌸", "💖", "🦋", "✨"],
       style: "spring"
     }
@@ -70,14 +70,14 @@ The rain fell soft on your sweet face.`,
     theme: {
       name: "Misty Ocean Dreams",
       colors: {
-        primary: "#4682b4",
-        secondary: "#87ceeb",
-        accent: "#00bfff",
-        background: "linear-gradient(135deg, #e6f3ff 0%, #cce7ff 50%, #b3daff 100%)",
-        text: "#2c5f7a",
-        card: "rgba(135, 206, 235, 0.8)"
+        primary: "#0277bd",
+        secondary: "#29b6f6",
+        accent: "#01579b",
+        background: "linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 50%, #81d4fa 100%)",
+        text: "#01579b",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#4682b4", "#87ceeb", "#b0e0e6", "#e0f6ff"],
+      gradient: ["#0277bd", "#29b6f6", "#81d4fa", "#e1f5fe"],
       emojis: ["🌊", "💙", "☔", "🌙"],
       style: "ocean"
     }
@@ -98,14 +98,14 @@ fir madam ji ko live location bheji, unka phone aya ki amroh chownk utar jana, m
     theme: {
       name: "Golden Sunset Memory",
       colors: {
-        primary: "#ff8c42",
-        secondary: "#ffb347",
-        accent: "#ff6b35",
-        background: "linear-gradient(135deg, #fff4e6 0%, #ffe6cc 50%, #ffd9b3 100%)",
-        text: "#8b4513",
-        card: "rgba(255, 179, 71, 0.8)"
+        primary: "#f57c00",
+        secondary: "#ffb74d",
+        accent: "#e65100",
+        background: "linear-gradient(135deg, #fff8e1 0%, #ffecb3 50%, #ffe082 100%)",
+        text: "#e65100",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#ff8c42", "#ffb347", "#ffd700", "#fff8dc"],
+      gradient: ["#f57c00", "#ffb74d", "#ffe082", "#fff8e1"],
       emojis: ["🌅", "🧡", "🚌", "💍"],
       style: "sunset"
     }
@@ -120,14 +120,14 @@ fir madam ji ko live location bheji, unka phone aya ki amroh chownk utar jana, m
     theme: {
       name: "Royal Purple Evening",
       colors: {
-        primary: "#8a2be2",
-        secondary: "#dda0dd",
-        accent: "#9932cc",
-        background: "linear-gradient(135deg, #f8f0ff 0%, #ede0ff 50%, #e1d0ff 100%)",
-        text: "#4b0082",
-        card: "rgba(221, 160, 221, 0.8)"
+        primary: "#7b1fa2",
+        secondary: "#9c27b0",
+        accent: "#4a148c",
+        background: "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 50%, #ce93d8 100%)",
+        text: "#4a148c",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#8a2be2", "#dda0dd", "#e6e6fa", "#f8f8ff"],
+      gradient: ["#7b1fa2", "#9c27b0", "#ce93d8", "#f3e5f5"],
       emojis: ["💜", "👑", "🌙", "✨"],
       style: "royal"
     }
@@ -149,14 +149,14 @@ we wanted to go on that roof top, we took the lift, I was in a lift w you going 
     theme: {
       name: "Cyberpunk Nights",
       colors: {
-        primary: "#00ffff",
-        secondary: "#ff00ff",
-        accent: "#00ff00",
-        background: "linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a1a1a 100%)",
-        text: "#ffffff",
-        card: "rgba(0, 255, 255, 0.2)"
+        primary: "#00acc1",
+        secondary: "#26c6da",
+        accent: "#0097a7",
+        background: "linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 50%, #80cbc4 100%)",
+        text: "#00695c",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#00ffff", "#ff00ff", "#00ff00", "#ffff00"],
+      gradient: ["#00acc1", "#26c6da", "#80cbc4", "#e0f2f1"],
       emojis: ["🌆", "💎", "🔮", "⚡"],
       style: "cyberpunk"
     }
@@ -175,14 +175,14 @@ tere haath me scrunchie tha, tere Baal bawaal lag rahe the aur tu mujhe roast ka
     theme: {
       name: "Matcha Garden",
       colors: {
-        primary: "#7cb342",
-        secondary: "#aed581",
-        accent: "#8bc34a",
-        background: "linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 50%, #dcedc8 100%)",
-        text: "#33691e",
-        card: "rgba(174, 213, 129, 0.8)"
+        primary: "#388e3c",
+        secondary: "#66bb6a",
+        accent: "#2e7d32",
+        background: "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 50%, #a5d6a7 100%)",
+        text: "#1b5e20",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#7cb342", "#aed581", "#c8e6c9", "#e8f5e8"],
+      gradient: ["#388e3c", "#66bb6a", "#a5d6a7", "#e8f5e8"],
       emojis: ["🍃", "🌿", "💚", "🍵"],
       style: "matcha"
     }
@@ -202,14 +202,14 @@ Im very sorry.`,
     theme: {
       name: "Forest Emerald",
       colors: {
-        primary: "#228b22",
-        secondary: "#90ee90",
-        accent: "#32cd32",
-        background: "linear-gradient(135deg, #f0fff0 0%, #e6ffe6 50%, #dcffdc 100%)",
-        text: "#006400",
-        card: "rgba(144, 238, 144, 0.8)"
+        primary: "#2e7d32",
+        secondary: "#4caf50",
+        accent: "#1b5e20",
+        background: "linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 50%, #a5d6a7 100%)",
+        text: "#1b5e20",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#228b22", "#90ee90", "#98fb98", "#f0fff0"],
+      gradient: ["#2e7d32", "#4caf50", "#a5d6a7", "#e8f5e8"],
       emojis: ["🌲", "💎", "🍀", "🌱"],
       style: "forest"
     }
@@ -230,14 +230,14 @@ a pyara kala sling bag and that kurti on a mooney night. AHHHHHHHH `,
     theme: {
       name: "Sunflower Warmth",
       colors: {
-        primary: "#ffd700",
-        secondary: "#ffeb3b",
-        accent: "#ff9800",
-        background: "linear-gradient(135deg, #fffef7 0%, #fff8e1 50%, #fff3c4 100%)",
-        text: "#f57c00",
-        card: "rgba(255, 235, 59, 0.8)"
+        primary: "#f57f17",
+        secondary: "#fbc02d",
+        accent: "#f9a825",
+        background: "linear-gradient(135deg, #fffde7 0%, #fff9c4 50%, #fff176 100%)",
+        text: "#e65100",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#ffd700", "#ffeb3b", "#fff176", "#fffde7"],
+      gradient: ["#f57f17", "#fbc02d", "#fff176", "#fffde7"],
       emojis: ["🌻", "☀️", "💛", "✨"],
       style: "sunset"
     }
@@ -258,14 +258,14 @@ a pyara kala sling bag and that kurti on a mooney night. AHHHHHHHH `,
     theme: {
       name: "Twilight Violet",
       colors: {
-        primary: "#9c27b0",
-        secondary: "#ce93d8",
-        accent: "#e91e63",
-        background: "linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%)",
-        text: "#880e4f",
-        card: "rgba(206, 147, 216, 0.8)"
+        primary: "#7b1fa2",
+        secondary: "#9c27b0",
+        accent: "#4a148c",
+        background: "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 50%, #ce93d8 100%)",
+        text: "#4a148c",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#9c27b0", "#ce93d8", "#f3e5f5", "#fce4ec"],
+      gradient: ["#7b1fa2", "#9c27b0", "#ce93d8", "#f3e5f5"],
       emojis: ["🌆", "💜", "🌸", "✨"],
       style: "royal"
     }
@@ -283,14 +283,14 @@ vo pyaare roses aur vo dark chocolate blinkit ke bag mein ahahaha, vo letter aur
     theme: {
       name: "Crimson Romance",
       colors: {
-        primary: "#dc143c",
-        secondary: "#ff69b4",
-        accent: "#ff1493",
-        background: "linear-gradient(135deg, #ffe4e1 0%, #ffc0cb 50%, #ffb6c1 100%)",
-        text: "#8b0000",
-        card: "rgba(255, 105, 180, 0.8)"
+        primary: "#c2185b",
+        secondary: "#e91e63",
+        accent: "#ad1457",
+        background: "linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%)",
+        text: "#880e4f",
+        card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#dc143c", "#ff69b4", "#ffb6c1", "#ffe4e1"],
+      gradient: ["#c2185b", "#e91e63", "#f8bbd9", "#fce4ec"],
       emojis: ["🌹", "❤️", "💌", "✨"],
       style: "spring"
     }

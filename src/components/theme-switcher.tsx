@@ -53,7 +53,7 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
       >
         <motion.button
           onClick={() => setShowThemeSelector(!showThemeSelector)}
-          className="relative p-3 rounded-full border transition-all duration-300 hover:scale-105 active:scale-95"
+          className="relative p-2 rounded-full border transition-all duration-300 hover:scale-105 active:scale-95"
           style={{
             backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
             borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
@@ -63,7 +63,7 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
           whileTap={{ scale: 0.95 }}
           type="button"
         >
-          <FiSettings size={20} />
+          <FiSettings size={16} />
           
           {/* Theme indicator glow */}
           <motion.div
@@ -105,7 +105,7 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
                   <motion.button
                     key={poem.id}
                     onClick={() => handleThemeSelect(index)}
-                    className={`relative w-8 h-8 rounded-full border-2 transition-all duration-200 ${
+                    className={`relative w-6 h-6 rounded-full border transition-all duration-200 ${
                       currentPoemIndex === index ? 'scale-110' : 'hover:scale-105'
                     }`}
                     style={{
@@ -149,7 +149,7 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
       >
         <motion.button
           onClick={toggleTheme}
-          className="relative p-3 rounded-full border transition-all duration-300 hover:scale-105 active:scale-95"
+          className="relative p-2 rounded-full border transition-all duration-300 hover:scale-105 active:scale-95"
           style={{
             backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
             borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
@@ -178,7 +178,7 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <FiSun size={20} />
+                <FiSun size={16} />
               </motion.div>
             ) : (
               <motion.div
@@ -186,7 +186,7 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <FiMoon size={20} />
+                <FiMoon size={16} />
               </motion.div>
             )}
           </motion.div>

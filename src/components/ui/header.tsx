@@ -20,7 +20,7 @@ export const Header = ({ currentPoem }: HeaderProps) => {
         className="text-center mb-4 md:mb-6"
       >
         <motion.div
-          className="text-sm md:text-base font-semibold font-funnel tracking-wide"
+          className="text-sm md:text-base font-semibold font-inter tracking-wide"
           style={{ 
             color: primaryTextColor,
           }}
@@ -44,7 +44,7 @@ export const Header = ({ currentPoem }: HeaderProps) => {
         className="text-center mb-6 md:mb-8"
       >
         <TextShimmer
-          className="text-4xl md:text-6xl font-bold font-funnel tracking-wider"
+          className="text-4xl md:text-6xl font-bold font-manrope tracking-wider"
           style={{ 
             color: currentPoem?.theme.colors.primary || '#f77fbe',
           }}
