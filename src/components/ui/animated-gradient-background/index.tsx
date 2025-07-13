@@ -1,71 +1,118 @@
-import KittyDecoration from "../../kitty-decoration";
-import "./index.css"
-import { PropsWithChildren, useEffect, useRef } from "react"
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Poem } from '../../data/poems';
+import './index.css';
 
-export const AnimatedBackground = ({ children }: PropsWithChildren) => {
-  const interactiveRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const circle = interactiveRef.current;
-    if (!circle) return;
-
-    let posX = window.innerWidth / 2;
-    let posY = window.innerHeight / 2;
-    let targetX = posX;
-    let targetY = posY;
-    let animationId: number;
-    let isAnimating = false;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      targetX = event.clientX;
-      targetY = event.clientY;
-
-      if (!isAnimating) {
-        isAnimating = true;
-        animationId = requestAnimationFrame(animate);
-      }
-    };
-
-    const animate = () => {
-      const dx = targetX - posX;
-      const dy = targetY - posY;
-
-      if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) {
-        isAnimating = false;
-        return;
-      }
-
-      posX += dx / 20;
-      posY += dy / 20;
-
-      circle.style.transform = `translate(${Math.round(posX)}px, ${Math.round(posY)}px)`;
-      animationId = requestAnimationFrame(animate);
-    };
-
-    circle.style.transform = `translate(${posX}px, ${posY}px)`;
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationId);
-    };
-  }, []);
-
-  return (
-    <div className="min-h-screen gradient-bg">
-      <main className="gradients-container">
-        <div className='g1'></div>
-        <div className='g2'></div>
-        <div className='g3'></div>
-        <div className='g4'></div>
-        <div className='g5'></div>
-        <div className='interactive' ref={interactiveRef}></div>
-      </main>
-      <div className="grain-overlay opacity-40" />
-      <div className="fixed top-0 left-0 size-full z-20" draggable="false">
-        {children}
-      </div>
-    </div>
-  )
+interface AnimatedBackgroundProps {
+  children: React.ReactNode;
+  currentPoem?: Poem;
 }
+
+export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({ children, currentPoem }) => {
+  const theme = currentPoem?.theme;
+  
+  return (
+    <motion.div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: theme?.colors.background || 'linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffcce5 100%)',
+      }}
+      animate={{
+        background: theme?.colors.background || 'linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffcce5 100%)',
+      }}
+      transition={{
+        duration: 1.2,
+        ease: "easeInOut"
+      }}
+    >
+      {/* Dynamic floating orbs based on theme */}
+      {theme && [...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: `${40 + i * 15}px`,
+            height: `${40 + i * 15}px`,
+            background: `radial-gradient(circle, ${theme.gradient[0]}30 0%, ${theme.gradient[1]}20 50%, transparent 100%)`,
+            left: `${5 + i * 12}%`,
+            top: `${10 + i * 10}%`,
+          }}
+          animate={{
+            x: [0, 50, -30, 0],
+            y: [0, -60, 40, 0],
+            scale: [1, 1.3, 0.7, 1],
+            rotate: [0, 360],
+            opacity: [0.3, 0.6, 0.2, 0.3],
+          }}
+          transition={{
+            duration: 12 + i * 3,
+            ease: "easeInOut",
+            repeat: Infinity,
+            delay: i * 1.2,
+          }}
+        />
+      ))}
+      
+      {/* Theme-based decorative elements */}
+      {theme && theme.emojis.map((emoji, i) => (
+        <motion.div
+          key={`${emoji}-${i}`}
+          className="absolute text-2xl md:text-3xl pointer-events-none select-none opacity-60"
+          style={{
+            left: `${15 + i * 20}%`,
+            top: `${20 + i * 15}%`,
+          }}
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 10, -10, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 4 + i,
+            ease: "easeInOut",
+            repeat: Infinity,
+            delay: i * 0.8,
+          }}
+        >
+          {emoji}
+        </motion.div>
+      ))}
+
+      {/* Subtle breathing gradient overlay */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(circle at 50% 50%, ${theme?.colors.primary}10 0%, transparent 70%)`,
+        }}
+        animate={{
+          scale: [1, 1.05, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 6,
+          ease: "easeInOut",
+          repeat: Infinity,
+        }}
+      />
+      
+      {/* Animated grain texture for organic feel */}
+      <motion.div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: 'var(--grain)',
+          backgroundSize: '200px 200px',
+        }}
+        animate={{
+          backgroundPosition: ['0px 0px', '200px 200px'],
+        }}
+        transition={{
+          duration: 4,
+          ease: "linear",
+          repeat: Infinity,
+        }}
+      />
+      
+      {children}
+    </motion.div>
+  );
+};
