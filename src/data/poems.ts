@@ -40,14 +40,14 @@ In your laughter, love begins.`,
     theme: {
       name: "Cherry Blossom Spring",
       colors: {
-        primary: "#e91e63",
-        secondary: "#f48fb1", 
+        primary: "#ff1744", // More zesty pink!
+        secondary: "#ff6090", // Brighter secondary
         accent: "#ad1457",
-        background: "linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #f48fb1 100%)",
+        background: "linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #ff6090 100%)", // More vibrant gradient
         text: "#880e4f",
         card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#e91e63", "#f48fb1", "#f8bbd9", "#fce4ec"],
+      gradient: ["#ff1744", "#ff6090", "#f8bbd9", "#fce4ec"], // Zestier gradient
       emojis: ["🌸", "💖", "🦋", "✨"],
       style: "spring"
     }
@@ -68,17 +68,17 @@ The rain fell soft on your sweet face.`,
     image: "/image/14.avif",
     audio: "/audio/rainy-rasa.mp3",
     theme: {
-      name: "Misty Ocean Dreams",
+      name: "Electric Ocean Dreams",
       colors: {
-        primary: "#0277bd",
-        secondary: "#29b6f6",
-        accent: "#01579b",
-        background: "linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 50%, #81d4fa 100%)",
-        text: "#01579b",
+        primary: "#00b4d8", // More electric blue!
+        secondary: "#0077b6", // Deeper blue
+        accent: "#023e8a", // Rich navy
+        background: "linear-gradient(135deg, #caf0f8 0%, #90e0ef 50%, #00b4d8 100%)", // More vibrant ocean
+        text: "#023e8a",
         card: "rgba(255, 255, 255, 0.9)"
       },
-      gradient: ["#0277bd", "#29b6f6", "#81d4fa", "#e1f5fe"],
-      emojis: ["🌊", "💙", "☔", "🌙"],
+      gradient: ["#00b4d8", "#0077b6", "#90e0ef", "#caf0f8"], // Electric gradient
+      emojis: ["🌊", "💙", "⚡", "🌙"],
       style: "ocean"
     }
   },

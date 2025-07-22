@@ -11,33 +11,34 @@ interface SplashScreenProps {
 export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenProps) => {
   const phrase = "HELLOO CUTIEE PATOOTIEE"
   
-  // Lighter, more pastel rainbow colors with additional soft tones
+  // SUPER ZESTY and ZINGY rainbow colors - more vibrant!
   const rainbowColors = [
-    '#ff9999', '#ffb366', '#ffff99', '#99ff99', 
-    '#9999ff', '#cc99ff', '#ff99ff', '#ff99cc',
-    '#99ffff', '#ffb3e6', '#b3ffb3', '#ffe066',
-    '#ffcce6', '#e6ccff', '#ccffcc', '#fff0cc'
+    '#ff6b9d', '#ff8c42', '#ffd93d', '#6bcf7f', 
+    '#4dabf7', '#9775fa', '#f06292', '#ff7043',
+    '#26c6da', '#ab47bc', '#66bb6a', '#ffca28',
+    '#ef5350', '#5c6bc0', '#42a5f5', '#29b6f6',
+    '#26a69a', '#9ccc65', '#d4e157', '#ffee58'
   ];
 
-  // Varied sparkle symbols for more visual interest
-  const sparkleSymbols = ['✨', '💫', '⭐', '🌟', '💖', '🦋', '🌸', '🌺', '🌈', '💎'];
+  // More fun and zesty sparkle symbols!
+  const sparkleSymbols = ['✨', '💫', '⭐', '🌟', '💖', '🦋', '🌸', '🌺', '🌈', '💎', '🎀', '🌼', '🦄', '💝', '🌙', '☀️', '🎉', '🎊'];
 
-  const sparkles = Array.from({ length: 25 }, (_, i) => ({
+  const sparkles = Array.from({ length: 40 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    scale: 0.4 + Math.random() * 1.2,
+    scale: 0.5 + Math.random() * 1.5, // Bigger sparkles!
     delay: Math.random() * 8,
     color: rainbowColors[Math.floor(Math.random() * rainbowColors.length)],
     symbol: sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)],
   }));
 
-  // Floating geometric elements
-  const geometricElements = Array.from({ length: 8 }, (_, i) => ({
+  // More floating geometric elements for extra zestiness!
+  const geometricElements = Array.from({ length: 12 }, (_, i) => ({
     id: i,
     x: Math.random() * 90 + 5,
     y: Math.random() * 90 + 5,
-    scale: 0.3 + Math.random() * 0.7,
+    scale: 0.4 + Math.random() * 0.8,
     delay: Math.random() * 6,
     rotation: Math.random() * 360,
   }));
@@ -120,24 +121,25 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
             top: `${element.y}%`,
           }}
           animate={{
-            y: [0, -40, 0],
-            x: [0, Math.sin(element.id) * 30, 0],
-            rotate: [element.rotation, element.rotation + 360],
-            opacity: [0.2, 0.6, 0.2],
-            scale: [element.scale, element.scale * 1.3, element.scale],
+            y: [0, -60, 0], // More dramatic movement!
+            x: [0, Math.sin(element.id) * 50, 0], // Wider movement
+            rotate: [element.rotation, element.rotation + 720], // Double rotation!
+            opacity: [0.3, 0.8, 0.3], // More visible
+            scale: [element.scale, element.scale * 1.6, element.scale], // Bigger scaling
           }}
           transition={{
-            duration: 10 + Math.random() * 5,
+            duration: 8 + Math.random() * 4, // Faster animations
             repeat: Infinity,
             delay: element.delay,
             ease: "easeInOut",
           }}
         >
           <div
-            className="w-6 h-6 rounded-full"
+            className="w-8 h-8 rounded-full" // Bigger geometric elements
             style={{
               background: `linear-gradient(45deg, ${rainbowColors[element.id % rainbowColors.length]}, ${rainbowColors[(element.id + 1) % rainbowColors.length]})`,
-              filter: 'blur(1px) drop-shadow(0 0 8px currentColor)',
+              filter: 'blur(0.5px) drop-shadow(0 0 12px currentColor)', // More glow!
+              boxShadow: `0 0 20px ${rainbowColors[element.id % rainbowColors.length]}40`,
             }}
           />
         </motion.div>
@@ -159,26 +161,27 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
       {sparkles.map((sparkle) => (
         <motion.div
           key={sparkle.id}
-          className="absolute text-2xl md:text-3xl pointer-events-none"
+          className="absolute text-3xl md:text-4xl pointer-events-none" // Bigger sparkles!
           style={{
             left: `${sparkle.x}%`,
             top: `${sparkle.y}%`,
             color: sparkle.color,
-            filter: 'drop-shadow(0 0 8px currentColor)',
+            filter: 'drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor)', // Double glow!
+            textShadow: `0 0 20px ${sparkle.color}, 0 0 40px ${sparkle.color}`, // Extra sparkle!
           }}
-                    animate={{
-            y: [0, -35, 0],
-            x: [0, Math.sin(sparkle.id) * 25, 0],
-            opacity: [0.3, 0.9, 0.3],
-            scale: [sparkle.scale, sparkle.scale * 1.6, sparkle.scale],
-            rotate: [0, 360, 720],
-                    }}
-                    transition={{
-            duration: 6 + Math.random() * 4,
-                      repeat: Infinity,
+          animate={{
+            y: [0, -50, 0], // More dramatic movement
+            x: [0, Math.sin(sparkle.id) * 40, 0], // Wider range
+            opacity: [0.4, 1, 0.4], // Full opacity at peak
+            scale: [sparkle.scale, sparkle.scale * 2, sparkle.scale], // Bigger scaling
+            rotate: [0, 360, 720, 1080], // Triple rotation!
+          }}
+          transition={{
+            duration: 5 + Math.random() * 3, // Faster and more varied
+            repeat: Infinity,
             delay: sparkle.delay,
-                      ease: "easeInOut",
-                    }}
+            ease: "easeInOut",
+          }}
         >
           {sparkle.symbol}
         </motion.div>

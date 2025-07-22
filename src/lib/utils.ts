@@ -5,6 +5,51 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Function to get adaptive theme colors based on dark mode
+export const getAdaptiveThemeColors = (themeColors: any, isDarkMode: boolean) => {
+  if (!isDarkMode) {
+    return themeColors; // Return original colors for light mode
+  }
+  
+  // Dark mode variants - ZESTY and ZINGY! Keep them super vibrant!
+  const adaptedColors = {
+    ...themeColors,
+    primary: adjustColorForDarkMode(themeColors.primary, 0.95), // Keep 95% intensity - SUPER VIBRANT!
+    secondary: adjustColorForDarkMode(themeColors.secondary, 0.9), // Keep 90% intensity 
+    accent: adjustColorForDarkMode(themeColors.accent, 0.85), // Keep 85% intensity
+    background: getDarkModeBackground(themeColors.background, themeColors.primary, themeColors.secondary),
+    text: '#f8fafc', // Brighter text for better contrast
+    card: 'rgba(51, 65, 85, 0.85)' // Lighter dark background - more zesty!
+  };
+  
+  return adaptedColors;
+};
+
+// Helper function to adjust individual colors for dark mode - KEEP THEM ZINGY!
+const adjustColorForDarkMode = (color: string, intensity: number = 0.95): string => {
+  // Convert hex to RGB
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  
+  // Keep colors SUPER vibrant and zesty!
+  const darkR = Math.max(60, Math.floor(r * intensity)); // Higher minimum for more vibrancy
+  const darkG = Math.max(60, Math.floor(g * intensity));
+  const darkB = Math.max(60, Math.floor(b * intensity));
+  
+  return `#${darkR.toString(16).padStart(2, '0')}${darkG.toString(16).padStart(2, '0')}${darkB.toString(16).padStart(2, '0')}`;
+};
+
+// Helper function to get ZESTY dark mode background
+const getDarkModeBackground = (originalBackground: string, primary: string, secondary: string): string => {
+  // Create a vibrant dark gradient that's still zesty!
+  const zestyPrimary = adjustColorForDarkMode(primary, 0.6); // More vibrant base
+  const zestySecondary = adjustColorForDarkMode(secondary, 0.7);
+  
+  return `linear-gradient(135deg, ${zestyPrimary}60 0%, ${zestySecondary}50 30%, #334155 70%, #1e293b 100%)`;
+};
+
 // Clean contrast system for maximum readability without heavy shadows
 export const getContrastColor = (backgroundColor: string, primaryColor: string, fallbackColor: string) => {
   // Theme-specific color mappings with high contrast

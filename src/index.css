@@ -1,6 +1,336 @@
+/* Import magical animations */
+@import './styles/magical-animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ZESTY body styling - no white bars! */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: #1e293b; /* Default dark background */
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Hide any browser audio controls and progress bars */
+audio {
+  display: none !important;
+}
+
+audio::-webkit-media-controls {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-timeline {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-current-time-display {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-time-remaining-display {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-mute-button {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-volume-slider {
+  display: none !important;
+}
+
+audio::-webkit-media-controls-fullscreen-button {
+  display: none !important;
+}
+
+/* Poem navigation specific styles */
+.poem-navigation-container {
+  isolation: isolate;
+  z-index: 20;
+}
+
+.poem-navigation-container * {
+  position: relative;
+}
+
+.poem-navigation-wrapper {
+  isolation: isolate;
+  z-index: 20;
+}
+
+.poem-navigation-wrapper * {
+  position: relative;
+  z-index: inherit;
+}
+
+/* Hide any other progress bars, timeline elements, or browser controls */
+[role="progressbar"], 
+.progress-bar, 
+.timeline, 
+input[type="range"],
+.use-sound-progress,
+.audio-progress,
+.media-controls,
+.sound-controls,
+*[class*="progress"],
+*[class*="timeline"],
+*[class*="audio-control"],
+*[class*="media-control"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide any floating or fixed positioned progress bars */
+div[style*="position: fixed"],
+div[style*="position: absolute"] {
+  &:has(input[type="range"]) {
+    display: none !important;
+  }
+}
+
+/* Specifically target any white background progress bars */
+div[style*="background: white"],
+div[style*="background-color: white"],
+div[style*="background: #fff"],
+div[style*="background-color: #fff"] {
+  &:has(.progress, input[type="range"], [role="progressbar"]) {
+    display: none !important;
+  }
+}
+
+/* Prevent white bars on scroll */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+/* Root CSS Variables for Magical Themes */
+:root {
+  --magical-primary: #8b5cf6;
+  --magical-secondary: #ec4899;
+  --magical-accent: #06b6d4;
+  --magical-glow: rgba(139, 92, 246, 0.3);
+  --magical-shimmer: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  
+  /* Dynamic theme variables (updated by React) */
+  --theme-primary: #8b5cf6;
+  --theme-secondary: #ec4899;
+  --theme-accent: #06b6d4;
+  --theme-text: #1f2937;
+  --theme-background: #ffffff;
+  --theme-card: rgba(255, 255, 255, 0.9);
+  --theme-gradient-0: #8b5cf6;
+  --theme-gradient-1: #ec4899;
+  --theme-gradient-2: #06b6d4;
+  --theme-gradient-3: #f59e0b;
+  --theme-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+  --theme-glow: 0 0 30px rgba(139, 92, 246, 0.25);
+}
+
+/* Custom Cursor - Show on most devices except very small touch screens */
+@media (min-width: 640px) {
+  * {
+    cursor: none !important;
+  }
+
+  button, a, [role="button"], .cursor-magical {
+    cursor: none !important;
+  }
+}
+
+/* Only hide cursor on very small touch devices */
+@media (max-width: 639px) and (pointer: coarse) {
+  * {
+    cursor: auto !important;
+  }
+
+  button, a, [role="button"], .cursor-magical {
+    cursor: pointer !important;
+  }
+}
+
+/* Magical Utility Classes */
+@layer utilities {
+  .magical-gradient {
+    background: linear-gradient(135deg, var(--theme-gradient-0) 0%, var(--theme-gradient-1) 25%, var(--theme-gradient-2) 50%, var(--theme-gradient-3) 75%);
+    background-size: 400% 400%;
+    animation: aurora 8s ease-in-out infinite;
+  }
+  
+  .magical-text {
+    background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 50%, var(--theme-accent) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: rainbow-rotate 3s linear infinite;
+  }
+  
+  .magical-glow {
+    box-shadow: var(--theme-glow);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .magical-glow:hover {
+    box-shadow: 0 0 40px var(--magical-glow);
+  }
+  
+  .magical-border {
+    border: 1px solid;
+    border-image: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary), var(--theme-accent)) 1;
+  }
+  
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .magical-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .magical-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--magical-shimmer);
+    animation: slide-shimmer 3s linear infinite;
+  }
+
+  /* Mobile-first responsive improvements */
+  @media (max-width: 768px) {
+    .magical-text {
+      background-size: 100% 100%;
+      animation: none; /* Reduce motion on mobile for performance */
+    }
+    
+    .magical-glow {
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+    }
+    
+    .magical-shimmer::before {
+      animation-duration: 4s; /* Slower animation on mobile */
+    }
+  }
+}
+
+/* Enhanced Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--theme-secondary), var(--theme-accent));
+  box-shadow: 0 0 10px var(--magical-glow);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--theme-primary);
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Magical focus states */
+*:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 20px var(--magical-glow);
+  transition: all 0.3s ease;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+
+  /* Reduce animations on mobile for better performance */
+  .magical-gradient {
+    animation-duration: 12s;
+  }
+  
+  .magical-shimmer::before {
+    animation-duration: 4s;
+  }
+
+  /* Optimize touch interactions */
+  button, [role="button"], a {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+
+  /* Better scrolling on mobile */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
 
 body {
   padding: 0;
@@ -62,4 +392,127 @@ html {
 ::selection {
   color: var(--color-bg2);
   background: var(--color-bg1);
+}
+
+/* Hello Kitty Core Theme Enhancements */
+.kitty-title {
+  background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4, #ffc0cb) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: 0 0 30px rgba(255, 105, 180, 0.5) !important;
+  filter: drop-shadow(0 4px 8px rgba(255, 105, 180, 0.3)) !important;
+}
+
+.kitty-button {
+  background: linear-gradient(45deg, rgba(255, 105, 180, 0.1), rgba(255, 182, 193, 0.1)) !important;
+  border: 2px solid rgba(255, 105, 180, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.kitty-button:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 105, 180, 0.5) !important;
+}
+
+.kitty-card {
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.1), rgba(255, 105, 180, 0.05)) !important;
+  border: 1px solid rgba(255, 105, 180, 0.2) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 
+    0 8px 32px rgba(255, 105, 180, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.kitty-heart {
+  color: #ff69b4;
+  filter: drop-shadow(0 2px 4px rgba(255, 105, 180, 0.3));
+}
+
+@keyframes kittyFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(1deg); }
+  50% { transform: translateY(-5px) rotate(0deg); }
+  75% { transform: translateY(-15px) rotate(-1deg); }
+}
+
+.kitty-float {
+  animation: kittyFloat 4s ease-in-out infinite;
+}
+
+@keyframes kittyPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.kitty-pulse {
+  animation: kittyPulse 2s ease-in-out infinite;
+}
+
+/* Enhanced shimmer for Hello Kitty theme */
+.hello-kitty-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 105, 180, 0.6),
+    rgba(255, 182, 193, 0.8),
+    rgba(255, 105, 180, 0.6),
+    transparent
+  );
+  animation: intensiveShimmer 1.5s linear infinite;
+}
+
+/* Hello Kitty Enhanced Button Styles */
+.kitty-button-enhanced {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ff69b4, #ff1493, #ffc0cb);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 8px 32px rgba(255, 105, 180, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kitty-button-enhanced:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 12px 40px rgba(255, 105, 180, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.kitty-button-enhanced:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.kitty-button-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.kitty-button-enhanced:hover::before {
+  left: 100%;
+}
+
+/* Magical gradient backgrounds */
+.kitty-gradient-1 {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+}
+
+.kitty-gradient-2 {
+  background: linear-gradient(135deg, #da70d6, #ff69b4);
+}
+
+.kitty-gradient-3 {
+  background: linear-gradient(135deg, #ff1493, #ffc0cb);
 }

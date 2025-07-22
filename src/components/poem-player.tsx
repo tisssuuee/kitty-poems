@@ -4,6 +4,8 @@ import { poems } from '../data/poems';
 import PoemCard from './poem-card';
 import PoemNavigation from './poem-navigation';
 import { Confetti, type ConfettiRef } from './ui/confetti';
+import { MagicalButton } from './ui/magical-button';
+import { useMagicalSounds } from '../hooks/useMagicalSounds';
 import useSound from 'use-sound';
 
 const clickSoundUrl = 'https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3';
@@ -20,15 +22,25 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
   const [playCelebration] = useSound(celebrationSoundUrl, { volume: 0.4 });
   const confettiRef = useRef<ConfettiRef>(null);
   const currentPoem = poems[currentPoemIndex];
+  
+  // Magical sounds
+  const { 
+    playMagicalClick, 
+    playMagicalSuccess, 
+    playMagicalTransition,
+    playMagicalSparkle 
+  } = useMagicalSounds();
 
   const handleChangePoemIndex = (newIndex: number) => {
     playClick();
+    playMagicalTransition();
     setCurrentPoemIndex(newIndex);
     onPoemChange(newIndex);
     
     // Add confetti celebration for poem transitions
     setTimeout(() => {
       playCelebration();
+      playMagicalSuccess();
       confettiRef.current?.fire({
         particleCount: 100,
         spread: 70,
@@ -40,6 +52,8 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
 
   const handlePoemCardClick = () => {
     // Add subtle confetti when clicking on poem card
+    playMagicalClick();
+    playMagicalSparkle();
     confettiRef.current?.fire({
       particleCount: 50,
       spread: 50,
@@ -50,7 +64,7 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
 
   return (
     <motion.div 
-      className="w-full max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto relative"
+      className="w-full max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto relative px-2 sm:px-0"
       initial={{ 
         opacity: 0, 
         y: 30, 
@@ -140,7 +154,7 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
 
       {!isExpanded && (
         <motion.div 
-          className='absolute w-full left-0 -bottom-16 md:-bottom-20'
+          className='absolute w-full left-0 -bottom-24 md:-bottom-28 z-20 poem-navigation-wrapper'
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ 

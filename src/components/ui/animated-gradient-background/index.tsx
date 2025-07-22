@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Poem } from '../../data/poems';
+import { Poem } from '../../../data/poems';
+import { getAdaptiveThemeColors } from '../../../lib/utils';
 import './index.css';
 
 interface AnimatedBackgroundProps {
@@ -10,15 +11,41 @@ interface AnimatedBackgroundProps {
 
 export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({ children, currentPoem }) => {
   const theme = currentPoem?.theme;
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+  
+  const adaptiveTheme = theme ? getAdaptiveThemeColors(theme.colors, isDarkMode) : null;
+  
+  const getBackgroundColor = () => {
+    if (isDarkMode && adaptiveTheme) {
+      return adaptiveTheme.background;
+    }
+    return theme?.colors.background || 'linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffcce5 100%)';
+  };
   
   return (
     <motion.div 
       className="min-h-screen relative overflow-hidden"
       style={{
-        background: theme?.colors.background || 'linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffcce5 100%)',
+        background: getBackgroundColor(),
       }}
       animate={{
-        background: theme?.colors.background || 'linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffcce5 100%)',
+        background: getBackgroundColor(),
       }}
       transition={{
         duration: 1.2,
@@ -33,7 +60,9 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({ children
           style={{
             width: `${40 + i * 15}px`,
             height: `${40 + i * 15}px`,
-            background: `radial-gradient(circle, ${theme.gradient[0]}30 0%, ${theme.gradient[1]}20 50%, transparent 100%)`,
+            background: isDarkMode 
+              ? `radial-gradient(circle, ${adaptiveTheme?.primary}40 0%, ${adaptiveTheme?.secondary}30 50%, transparent 100%)`
+              : `radial-gradient(circle, ${theme.gradient[0]}30 0%, ${theme.gradient[1]}20 50%, transparent 100%)`,
             left: `${5 + i * 12}%`,
             top: `${10 + i * 10}%`,
           }}
@@ -54,7 +83,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({ children
       ))}
       
       {/* Theme-based decorative elements */}
-      {theme && theme.emojis.map((emoji, i) => (
+      {theme && theme.emojis?.map((emoji: string, i: number) => (
         <motion.div
           key={`${emoji}-${i}`}
           className="absolute text-2xl md:text-3xl pointer-events-none select-none opacity-60"
@@ -82,7 +111,9 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({ children
       <motion.div
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(circle at 50% 50%, ${theme?.colors.primary}10 0%, transparent 70%)`,
+          background: isDarkMode
+            ? `radial-gradient(circle at 50% 50%, ${adaptiveTheme?.primary}15 0%, transparent 70%)`
+            : `radial-gradient(circle at 50% 50%, ${theme?.colors.primary}10 0%, transparent 70%)`,
         }}
         animate={{
           scale: [1, 1.05, 1],
