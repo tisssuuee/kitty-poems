@@ -13,9 +13,12 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
   const [showThemeSelector, setShowThemeSelector] = useState(false);
 
   useEffect(() => {
-    const isDark = localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    // Check if we're in browser environment
+    if (typeof window === 'undefined') return;
+    
+    const isDark = (typeof localStorage !== 'undefined' && localStorage.theme === "dark") ||
+      (typeof localStorage !== 'undefined' && !("theme" in localStorage) &&
+        window.matchMedia?.("(prefers-color-scheme: dark)").matches);
     setIsDarkMode(isDark);
     
     if (isDark) {
@@ -30,9 +33,14 @@ export const ThemeSwitcher = ({ currentPoemIndex, onPoemChange }: ThemeSwitcherP
   }, []);
 
   const toggleTheme = () => {
+    if (typeof window === 'undefined') return;
+    
     const newIsDark = !isDarkMode;
     setIsDarkMode(newIsDark);
-    localStorage.theme = newIsDark ? "dark" : "light";
+    
+    if (typeof localStorage !== 'undefined') {
+      localStorage.theme = newIsDark ? "dark" : "light";
+    }
     
     if (newIsDark) {
       document.documentElement.classList.add("dark");

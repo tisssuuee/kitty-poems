@@ -50,6 +50,18 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
     }, 200);
   }
 
+  const handleSwipeLeft = () => {
+    // Swipe left = next poem
+    const nextIndex = (currentPoemIndex + 1) % poems.length;
+    handleChangePoemIndex(nextIndex);
+  }
+
+  const handleSwipeRight = () => {
+    // Swipe right = previous poem  
+    const prevIndex = currentPoemIndex === 0 ? poems.length - 1 : currentPoemIndex - 1;
+    handleChangePoemIndex(prevIndex);
+  }
+
   const handlePoemCardClick = () => {
     // Add subtle confetti when clicking on poem card
     playMagicalClick();
@@ -64,7 +76,7 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
 
   return (
     <motion.div 
-      className="w-full max-w-sm md:max-w-2xl lg:max-w-4xl mx-auto relative px-2 sm:px-0"
+      className="w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl mx-auto relative px-2 sm:px-4 md:px-6"
       initial={{ 
         opacity: 0, 
         y: 30, 
@@ -140,6 +152,8 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
             isActive={true}
             isExpanded={isExpanded}
             setIsExpanded={setIsExpanded}
+            onSwipeLeft={handleSwipeLeft}
+            onSwipeRight={handleSwipeRight}
           />
         </motion.div>
       ) : (
@@ -154,7 +168,7 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
 
       {!isExpanded && (
         <motion.div 
-          className='absolute w-full left-0 -bottom-24 md:-bottom-28 z-20 poem-navigation-wrapper'
+          className='absolute w-full left-0 -bottom-16 sm:-bottom-18 md:-bottom-20 z-20 poem-navigation-wrapper'
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ 

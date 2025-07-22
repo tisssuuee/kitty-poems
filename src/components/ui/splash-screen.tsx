@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
-import { AnimatedBackground } from './animated-gradient-background';
 import { Meteors } from './meteors';
-import { TextShimmer } from './text-shimmer';
 
 interface SplashScreenProps {
   isTransitioning?: boolean;
@@ -23,18 +21,18 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
   // More fun and zesty sparkle symbols!
   const sparkleSymbols = ['✨', '💫', '⭐', '🌟', '💖', '🦋', '🌸', '🌺', '🌈', '💎', '🎀', '🌼', '🦄', '💝', '🌙', '☀️', '🎉', '🎊'];
 
-  const sparkles = Array.from({ length: 40 }, (_, i) => ({
+  const sparkles = Array.from({ length: 30 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    scale: 0.5 + Math.random() * 1.5, // Bigger sparkles!
-    delay: Math.random() * 8,
+    scale: 0.6 + Math.random() * 1.2, // Bigger sparkles!
+    delay: Math.random() * 6,
     color: rainbowColors[Math.floor(Math.random() * rainbowColors.length)],
     symbol: sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)],
   }));
 
   // More floating geometric elements for extra zestiness!
-  const geometricElements = Array.from({ length: 12 }, (_, i) => ({
+  const geometricElements = Array.from({ length: 8 }, (_, i) => ({
     id: i,
     x: Math.random() * 90 + 5,
     y: Math.random() * 90 + 5,
@@ -72,30 +70,30 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
           background: `
             radial-gradient(circle at 20% 50%, rgba(255,153,255,0.3) 0%, transparent 50%),
             radial-gradient(circle at 80% 50%, rgba(153,255,255,0.3) 0%, transparent 50%),
-            linear-gradient(45deg, 
+            linear-gradient(135deg, 
               #ff9999, #ffb366, #ffff99, #99ff99, 
               #9999ff, #cc99ff, #ff99ff, #ff99cc,
-              #99ffff, #ffb3e6, #b3ffb3, #ffe066,
-              #ffcce6, #e6ccff, #ccffcc, #fff0cc,
-              #ff9999
+              #99ffff, #ffb3e6, #b3ffb3, #ffe066
             )`,
-          backgroundSize: '400% 400%',
+          backgroundSize: '300% 300%',
+          willChange: 'transform',
         }}
         animate={{
           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
         }}
         transition={{
-          duration: 8,
+          duration: 10,
           repeat: Infinity,
           ease: "linear"
         }}
       >
-        {/* Soft breathing overlay */}
+        {/* Enhanced breathing overlay */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-white/10"
+          style={{ willChange: 'transform' }}
           animate={{
             opacity: [0.3, 0.6, 0.3],
-            scale: [1, 1.02, 1],
+            scale: [1, 1.01, 1],
           }}
           transition={{
             duration: 6,
@@ -105,13 +103,13 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
         />
 
         {/* Subtle vignette effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-transparent bg-gradient-radial from-center opacity-20" 
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-transparent opacity-20" 
              style={{
                background: 'radial-gradient(circle at center, transparent 40%, rgba(255,255,255,0.1) 100%)'
              }} />
       </motion.div>
 
-      {/* Floating geometric elements */}
+      {/* Enhanced floating geometric elements */}
       {geometricElements.map((element) => (
         <motion.div
           key={element.id}
@@ -119,65 +117,68 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
           style={{
             left: `${element.x}%`,
             top: `${element.y}%`,
+            willChange: 'transform',
           }}
           animate={{
-            y: [0, -60, 0], // More dramatic movement!
-            x: [0, Math.sin(element.id) * 50, 0], // Wider movement
-            rotate: [element.rotation, element.rotation + 720], // Double rotation!
-            opacity: [0.3, 0.8, 0.3], // More visible
-            scale: [element.scale, element.scale * 1.6, element.scale], // Bigger scaling
+            y: [0, -50, 0],
+            x: [0, Math.sin(element.id) * 40, 0],
+            rotate: [element.rotation, element.rotation + 360],
+            opacity: [0.3, 0.7, 0.3],
+            scale: [element.scale, element.scale * 1.4, element.scale],
           }}
           transition={{
-            duration: 8 + Math.random() * 4, // Faster animations
+            duration: 8 + element.id,
             repeat: Infinity,
             delay: element.delay,
             ease: "easeInOut",
           }}
         >
           <div
-            className="w-8 h-8 rounded-full" // Bigger geometric elements
+            className="w-7 h-7 rounded-full"
             style={{
               background: `linear-gradient(45deg, ${rainbowColors[element.id % rainbowColors.length]}, ${rainbowColors[(element.id + 1) % rainbowColors.length]})`,
-              filter: 'blur(0.5px) drop-shadow(0 0 12px currentColor)', // More glow!
-              boxShadow: `0 0 20px ${rainbowColors[element.id % rainbowColors.length]}40`,
+              filter: 'blur(0.5px) drop-shadow(0 0 10px currentColor)',
+              boxShadow: `0 0 15px ${rainbowColors[element.id % rainbowColors.length]}60`,
             }}
           />
         </motion.div>
       ))}
 
-      {/* Enhanced rainbow meteors */}
+      {/* Enhanced meteors */}
       <motion.div 
         className="absolute inset-0 overflow-hidden pointer-events-none"
+        style={{ willChange: 'transform' }}
         animate={{
-          opacity: isTransitioning ? 0.3 : 0.7,
-          scale: isTransitioning ? 1.2 : 1,
+          opacity: isTransitioning ? 0.3 : 0.6,
+          scale: isTransitioning ? 1.1 : 1,
         }}
         transition={{ duration: 0.8 }}
       >
-        <Meteors number={35} />
+        <Meteors number={25} />
       </motion.div>
 
-      {/* Enhanced sparkles with varied symbols */}
+      {/* Enhanced sparkles with more liveliness */}
       {sparkles.map((sparkle) => (
         <motion.div
           key={sparkle.id}
-          className="absolute text-3xl md:text-4xl pointer-events-none" // Bigger sparkles!
+          className="absolute text-2xl md:text-3xl pointer-events-none"
           style={{
             left: `${sparkle.x}%`,
             top: `${sparkle.y}%`,
             color: sparkle.color,
-            filter: 'drop-shadow(0 0 12px currentColor) drop-shadow(0 0 20px currentColor)', // Double glow!
-            textShadow: `0 0 20px ${sparkle.color}, 0 0 40px ${sparkle.color}`, // Extra sparkle!
+            filter: 'drop-shadow(0 0 10px currentColor) drop-shadow(0 0 15px currentColor)',
+            textShadow: `0 0 15px ${sparkle.color}, 0 0 25px ${sparkle.color}`,
+            willChange: 'transform',
           }}
           animate={{
-            y: [0, -50, 0], // More dramatic movement
-            x: [0, Math.sin(sparkle.id) * 40, 0], // Wider range
-            opacity: [0.4, 1, 0.4], // Full opacity at peak
-            scale: [sparkle.scale, sparkle.scale * 2, sparkle.scale], // Bigger scaling
-            rotate: [0, 360, 720, 1080], // Triple rotation!
+            y: [0, -40, 0],
+            x: [0, Math.sin(sparkle.id) * 30, 0],
+            opacity: [0.4, 0.9, 0.4],
+            scale: [sparkle.scale, sparkle.scale * 1.8, sparkle.scale],
+            rotate: [0, 360, 720],
           }}
           transition={{
-            duration: 5 + Math.random() * 3, // Faster and more varied
+            duration: 6 + (sparkle.id % 3),
             repeat: Infinity,
             delay: sparkle.delay,
             ease: "easeInOut",
@@ -229,15 +230,14 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
                   linear-gradient(90deg, 
                     #ff9999, #ffb366, #ffff99, #99ff99, 
                     #9999ff, #cc99ff, #ff99ff, #ff99cc,
-                    #99ffff, #ffb3e6, #b3ffb3, #ffe066,
-                    #ffcce6, #e6ccff, #ccffcc, #fff0cc,
-                    #ff9999
+                    #99ffff, #ffb3e6, #b3ffb3, #ffe066
                   )`,
-                backgroundSize: '400% 100%',
+                backgroundSize: '300% 100%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
                 filter: 'drop-shadow(0 4px 12px rgba(255,255,255,0.4))',
+                willChange: 'transform',
               }}
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
@@ -245,7 +245,7 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
               }}
               transition={{
                 backgroundPosition: {
-                  duration: 10,
+                  duration: 8,
                   repeat: Infinity,
                   ease: "linear"
                 },
@@ -279,6 +279,7 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
                 filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.3))',
+                willChange: 'transform',
               }}
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
@@ -286,12 +287,12 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
               }}
               transition={{
                 backgroundPosition: {
-                  duration: 8,
+                  duration: 6,
                   repeat: Infinity,
                   ease: "linear"
                 },
                 opacity: {
-                  duration: 5,
+                  duration: 4,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }
@@ -312,27 +313,25 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
               <motion.span
                 key={index}
                 className="relative"
+                style={{ willChange: 'transform' }}
                 animate={{
                   y: [0, -20, 0],
                   rotate: [0, 15, -15, 0],
                   scale: [1, 1.3, 1],
                 }}
                 transition={{
-                  duration: 5 + index * 0.5,
+                  duration: 4 + index * 0.5,
                   repeat: Infinity,
                   delay: index * 0.3,
                   ease: "easeInOut"
-                }}
-                style={{
-                  filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.6))',
                 }}
               >
                 {emoji}
                 <motion.div
                   className="absolute inset-0 rounded-full"
                   animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [0, 0.3, 0],
+                    scale: [1, 1.4, 1],
+                    opacity: [0, 0.4, 0],
                   }}
                   transition={{
                     duration: 3,
@@ -340,10 +339,10 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
                     delay: index * 0.2,
                   }}
                   style={{
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
                   }}
                 />
-                  </motion.span>
+              </motion.span>
             ))}
           </motion.div>
 
@@ -356,9 +355,10 @@ export const SplashScreen = ({ isTransitioning = false, onSkip }: SplashScreenPr
           >
             <motion.div
               className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20"
+              style={{ willChange: 'transform' }}
               animate={{
                 scale: [1, 1.05, 1],
-                boxShadow: ['0 0 20px rgba(255,255,255,0.2)', '0 0 30px rgba(255,255,255,0.4)', '0 0 20px rgba(255,255,255,0.2)'],
+                boxShadow: ['0 0 15px rgba(255,255,255,0.2)', '0 0 25px rgba(255,255,255,0.4)', '0 0 15px rgba(255,255,255,0.2)'],
               }}
               transition={{
                 duration: 3,

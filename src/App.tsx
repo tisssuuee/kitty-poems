@@ -121,7 +121,7 @@ function App() {
 
                 <div className="relative min-h-screen z-10">
                   <motion.main 
-                    className="container mx-auto relative px-6 sm:px-8 pt-6 md:pt-8 pb-32 md:pb-20 z-10 max-w-full overflow-hidden"
+                    className="container mx-auto relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-6 md:pt-8 pb-32 md:pb-20 z-10 max-w-full overflow-hidden"
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.8 }}

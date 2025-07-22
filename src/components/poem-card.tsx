@@ -11,6 +11,8 @@ interface PoemCardProps {
   isActive: boolean;
   isExpanded: boolean;
   setIsExpanded: (expanded: boolean) => void;
+  onSwipeLeft?: () => void;
+  onSwipeRight?: () => void;
 }
 
 const PoemCard: React.FC<PoemCardProps> = ({
@@ -18,6 +20,8 @@ const PoemCard: React.FC<PoemCardProps> = ({
   isActive = false,
   isExpanded,
   setIsExpanded,
+  onSwipeLeft,
+  onSwipeRight,
 }) => {
   const [isImageExpanded, setIsImageExpanded] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
@@ -228,7 +232,9 @@ const PoemCard: React.FC<PoemCardProps> = ({
       {/* Main Poem Card */}
       <motion.div
         className={`
-          group relative overflow-hidden rounded-3xl mx-auto w-full max-w-sm h-[500px] 
+          group relative overflow-hidden rounded-3xl mx-auto w-full 
+          max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 
+          h-[500px] md:h-[550px] lg:h-[600px] 
           transition-all duration-700 ease-out kitty-card
           ${isActive 
             ? 'scale-[1.02] shadow-2xl shadow-pink-500/30 ring-2 ring-pink-300' 
@@ -238,6 +244,25 @@ const PoemCard: React.FC<PoemCardProps> = ({
         style={{ background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)` }}
         whileHover={{ 
           y: -4,
+          transition: { type: "spring", stiffness: 300, damping: 30 }
+        }}
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragEnd={(_, { offset, velocity }) => {
+          const swipeThreshold = 50;
+          const swipeVelocityThreshold = 300;
+          
+          if (offset.x > swipeThreshold || velocity.x > swipeVelocityThreshold) {
+            // Swipe right - go to previous poem
+            onSwipeRight?.();
+          } else if (offset.x < -swipeThreshold || velocity.x < -swipeVelocityThreshold) {
+            // Swipe left - go to next poem
+            onSwipeLeft?.();
+          }
+        }}
+        whileDrag={{ 
+          scale: 0.95,
           transition: { type: "spring", stiffness: 300, damping: 30 }
         }}
         layout
@@ -283,8 +308,8 @@ const PoemCard: React.FC<PoemCardProps> = ({
             {/* Shimmer overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
             
-            {/* Floating action buttons */}
-            <div className="absolute top-2 md:top-4 right-2 md:right-4 flex flex-col space-y-2 md:space-y-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
+            {/* Floating action buttons - Always visible on desktop, hover on mobile */}
+            <div className="absolute top-2 md:top-4 right-2 md:right-4 flex flex-col space-y-2 md:space-y-3 opacity-0 group-hover:opacity-100 md:opacity-100 transition-all duration-500">
               <motion.button
                 className="w-10 h-10 md:w-12 md:h-12 rounded-full shadow-xl flex items-center justify-center backdrop-blur-sm border border-white/40"
                 onClick={(e) => {
@@ -335,12 +360,12 @@ const PoemCard: React.FC<PoemCardProps> = ({
         </div>
 
         {/* Content Section */}
-        <div className="relative p-6 h-[236px] flex flex-col">
+        <div className="relative p-4 sm:p-6 md:p-6 lg:p-8 h-[236px] md:h-[250px] lg:h-[280px] flex flex-col">
           {/* Title */}
           <TextShimmer 
-            className="kitty-title mb-3 line-clamp-2 text-center" 
+            className="kitty-title mb-2 sm:mb-3 line-clamp-2 text-center" 
             style={{
-              fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
+              fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
               lineHeight: '1.3',
               fontWeight: '800',
               color: isDarkMode ? '#ffffff' : '#1f2937',
@@ -353,9 +378,9 @@ const PoemCard: React.FC<PoemCardProps> = ({
           </TextShimmer>
 
           {/* Theme indicator */}
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-3 sm:mb-4">
             <motion.span 
-              className="text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm border border-white/30"
+              className="text-xs sm:text-sm md:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg backdrop-blur-sm border border-white/30"
               style={{ 
                 color: 'white',
                 background: `linear-gradient(135deg, ${theme.colors.primary}90, ${theme.colors.secondary}90)`,
@@ -371,7 +396,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
           </div>
 
           {/* Content preview */}
-          <div className="flex-1 mb-4 overflow-hidden">
+          <div className="flex-1 mb-3 sm:mb-4 overflow-hidden">
             <p 
               className="text-sm leading-relaxed line-clamp-4 font-medium text-center"
               style={{ 
@@ -417,7 +442,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
             
             <motion.button
               onClick={() => setIsExpanded(true)}
-              className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full shadow-lg hover:shadow-xl border border-white/40 backdrop-blur-sm"
+              className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full shadow-lg hover:shadow-xl border border-white/40 backdrop-blur-sm"
               whileHover={{ scale: 1.15, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
               style={{ 
@@ -426,7 +451,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
                 boxShadow: `0 4px 15px ${theme.colors.primary}40, 0 0 10px ${theme.colors.primary}20`
               }}
             >
-              <FiMaximize2 className="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-sm" />
+              <FiMaximize2 className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white drop-shadow-sm" />
             </motion.button>
           </div>
         </div>
@@ -453,7 +478,7 @@ const PoemCard: React.FC<PoemCardProps> = ({
               </motion.button>
 
               <motion.div
-                className="relative max-w-[90vw] max-h-[90vh]"
+                className="relative max-w-[95vw] max-h-[95vh] flex items-center justify-center"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
@@ -463,7 +488,13 @@ const PoemCard: React.FC<PoemCardProps> = ({
                   <img
                     src={poem.image}
                     alt={poem.title}
-                    className="w-full h-full object-contain rounded-2xl shadow-2xl"
+                    className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
+                    style={{ 
+                      width: 'auto', 
+                      height: 'auto',
+                      maxWidth: '95vw',
+                      maxHeight: '95vh'
+                    }}
                   />
                 ) : (
                   <div className="w-96 h-96 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center rounded-2xl shadow-2xl">

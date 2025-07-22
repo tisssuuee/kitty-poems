@@ -17,13 +17,13 @@ const useSpeechRecognition = (): UseSpeechRecognitionReturn => {
 
   useEffect(() => {
     // Check if speech recognition is supported
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    if (typeof window === 'undefined' || (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))) {
       setError('Speech recognition is not supported in this browser.');
       return;
     }
 
     // Initialize speech recognition
-    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     const recognitionInstance = new SpeechRecognition();
     
     recognitionInstance.continuous = true;
