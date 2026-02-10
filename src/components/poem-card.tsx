@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Poem } from '../data/poems';
-import { TextShimmer } from './ui/text-shimmer';
-import { MagicalButton } from './ui/magical-button';
-import { FiMaximize2, FiHeart, FiPlay, FiPause, FiMinimize2, FiX, FiChevronDown } from 'react-icons/fi';
-import { useState, useEffect } from 'react';
-import { getReadableTextColor, getAdaptiveThemeColors } from '../lib/utils';
+import { FiMaximize2, FiHeart, FiPlay, FiPause, FiX, FiChevronDown } from 'react-icons/fi';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+// Fallback audio — the only file that actually exists in /public/audio
+const FALLBACK_AUDIO = '/audio/tum-se-hi-jab-we-met-128-kbps_QF9o2eh4.mp3';
 
 interface PoemCardProps {
   poem: Poem;
@@ -15,6 +15,40 @@ interface PoemCardProps {
   onSwipeRight?: () => void;
 }
 
+// Heart burst particle component
+const HeartBurstParticles = ({ show }: { show: boolean }) => {
+  if (!show) return null;
+
+  const particles = [
+    { anim: 'heartBurst1', delay: '0s' },
+    { anim: 'heartBurst2', delay: '0.05s' },
+    { anim: 'heartBurst3', delay: '0.1s' },
+    { anim: 'heartBurst4', delay: '0.08s' },
+    { anim: 'heartBurst5', delay: '0.03s' },
+    { anim: 'heartBurst6', delay: '0.12s' },
+  ];
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+      {particles.map((p, i) => (
+        <svg
+          key={i}
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="var(--accent-hot)"
+          className="absolute"
+          style={{
+            animation: `${p.anim} 0.6s ease-out ${p.delay} forwards`,
+          }}
+        >
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      ))}
+    </div>
+  );
+};
+
 const PoemCard: React.FC<PoemCardProps> = ({
   poem,
   isActive = false,
@@ -24,225 +58,323 @@ const PoemCard: React.FC<PoemCardProps> = ({
   onSwipeRight,
 }) => {
   const [isImageExpanded, setIsImageExpanded] = useState(false);
-  const [showHeart, setShowHeart] = useState(false);
+  const [showHeartBurst, setShowHeartBurst] = useState(false);
   const [isContentExpanded, setIsContentExpanded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const theme = poem.theme;
-  const primaryTextColor = getReadableTextColor(theme, 'primary');
-  const adaptiveTheme = getAdaptiveThemeColors(theme.colors, isDarkMode);
-  
-  const getCardBackground = () => {
-    return isDarkMode ? adaptiveTheme.card : 'rgba(255, 255, 255, 0.95)';
-  };
-  
-  const getTextColor = () => {
-    return isDarkMode ? adaptiveTheme.text : '#1f2937';
-  };
-  
-  const getTitleColor = () => {
-    return isDarkMode ? '#ffffff' : '#1f2937';
-  };
+  const [audioReady, setAudioReady] = useState(false);
+  const readMoreRef = useRef<HTMLButtonElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    };
-    
-    checkDarkMode();
-    
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { 
-      attributes: true, 
-      attributeFilter: ['class'] 
-    });
-    
-    return () => observer.disconnect();
+    const check = () => setIsDarkMode(document.documentElement.classList.contains('dark'));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
   }, []);
 
+  // Create audio element — try poem-specific, fallback to global track
   useEffect(() => {
-    if (showHeart) {
-      const timer = setTimeout(() => {
-        setShowHeart(false);
-      }, 500);
+    setAudioReady(false);
+    setIsPlaying(false);
+
+    const src = poem.audio || FALLBACK_AUDIO;
+    const audio = new Audio();
+    audio.loop = true;
+    audio.volume = 0.5;
+    audio.preload = 'metadata';
+    audioRef.current = audio;
+
+    const onReady = () => setAudioReady(true);
+    const onError = () => {
+      // If poem-specific fails, try fallback
+      if (audio.src !== window.location.origin + FALLBACK_AUDIO) {
+        audio.src = FALLBACK_AUDIO;
+      }
+    };
+
+    audio.addEventListener('canplaythrough', onReady);
+    audio.addEventListener('error', onError);
+    audio.addEventListener('ended', () => setIsPlaying(false));
+    audio.src = src;
+
+    return () => {
+      audio.pause();
+      audio.removeEventListener('canplaythrough', onReady);
+      audio.removeEventListener('error', onError);
+      audio.src = '';
+      audioRef.current = null;
+    };
+  }, [poem.audio, poem.id]);
+
+  // Stop audio when poem changes or card deactivates
+  useEffect(() => {
+    if (!isActive && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  }, [isActive]);
+
+  // Clear heart burst after animation
+  useEffect(() => {
+    if (showHeartBurst) {
+      const timer = setTimeout(() => setShowHeartBurst(false), 700);
       return () => clearTimeout(timer);
     }
-  }, [showHeart]);
+  }, [showHeartBurst]);
 
-  const handleImageClick = () => {
-    setIsImageExpanded(!isImageExpanded);
-    setShowHeart(true);
-  };
+  const handleLike = useCallback(() => {
+    setIsLiked(prev => !prev);
+    setShowHeartBurst(true);
+  }, []);
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
+  const handlePlayPause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || !audioReady) return;
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setShowHeart(true);
-  };
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+    } else {
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
+    }
+  }, [isPlaying, audioReady]);
 
-  const truncatedContent = poem.content.length > 180 
-    ? poem.content.substring(0, 180) + "..." 
+  // Magnetic hover effect for Read More button
+  const handleReadMoreMouseMove = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = readMoreRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.03)`;
+  }, []);
+
+  const handleReadMoreMouseLeave = useCallback(() => {
+    const btn = readMoreRef.current;
+    if (btn) btn.style.transform = 'translate(0, 0) scale(1)';
+  }, []);
+
+  const truncatedContent = poem.content.length > 180
+    ? poem.content.substring(0, 180) + "..."
     : poem.content;
 
+  // Poem lines for staggered reveal in modal
+  const poemLines = poem.content.split('\n').filter(l => l.trim());
+
   return (
-    <AnimatePresence mode="wait">
-      {/* Expanded Lyrics View */}
+    <>
+      {/* ═══════════════ EXPANDED MODAL ═══════════════ */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md"
-            style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+            key="poem-modal-overlay"
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(255,100,150,0.15) 0%, rgba(26,10,20,0.85) 100%)',
+              backdropFilter: 'blur(40px)',
+              WebkitBackdropFilter: 'blur(40px)',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.35 }}
             onClick={() => setIsExpanded(false)}
           >
             <motion.div
-              className="relative w-full max-w-lg md:max-w-xl mx-4 md:mx-auto rounded-3xl shadow-2xl border border-neutral-200 flex flex-col max-h-[90vh] overflow-hidden"
-              style={{ 
-                backgroundColor: getCardBackground(),
-                borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+              className="relative w-full mx-4 flex flex-col"
+              style={{
+                maxWidth: '600px',
+                maxHeight: '85vh',
+                borderRadius: 'var(--radius-modal)',
+                overflow: 'hidden',
+                background: isDarkMode
+                  ? 'linear-gradient(135deg, rgba(42, 16, 32, 0.95), rgba(26, 10, 20, 0.98))'
+                  : 'linear-gradient(135deg, rgba(255, 240, 245, 0.97), rgba(255, 228, 240, 0.95))',
+                border: '1px solid rgba(255, 182, 210, 0.3)',
+                boxShadow: '0 25px 80px rgba(0,0,0,0.3)',
+                backdropFilter: 'blur(24px)',
               }}
-              initial={{ y: 60, scale: 0.96 }}
-              animate={{ y: 0, scale: 1 }}
-              exit={{ y: 60, scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 120, damping: 18 }}
+              initial={{ y: 60, scale: 0.96, opacity: 0, filter: 'blur(8px)' }}
+              animate={{ y: 0, scale: 1, opacity: 1, filter: 'blur(0px)' }}
+              exit={{ y: 60, scale: 0.96, opacity: 0, filter: 'blur(8px)' }}
+              transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
               onClick={e => e.stopPropagation()}
             >
-              {/* Close button */}
+              {/* Close button — frosted circle, rotates on hover */}
               <motion.button
-                className="absolute top-6 right-6 z-20 w-12 h-12 rounded-full bg-gradient-to-r from-pink-400 to-rose-500 shadow-xl flex items-center justify-center border-2 border-white/40"
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full flex items-center justify-center"
+                style={{
+                  background: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 182, 210, 0.2)',
+                }}
                 onClick={() => setIsExpanded(false)}
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <FiMinimize2 className="w-6 h-6 text-white drop-shadow-sm" />
+                <FiX className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
               </motion.button>
 
-              {/* Sticky header with image/title/meta */}
-              <div 
-                className="sticky top-0 z-10 border-b flex flex-col items-center pt-6 pb-4 px-6 rounded-t-3xl"
-                style={{ 
-                  backgroundColor: getCardBackground(),
-                  borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <motion.div 
-                  className="w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-neutral-100 flex items-center justify-center mx-auto cursor-zoom-in" 
-                  onClick={handleImageClick}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {poem.image ? (
-                    <img
-                      src={poem.image}
-                      alt={poem.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-4xl text-neutral-400">🖼️</span>
-                  )}
-                </motion.div>
-                
-                <TextShimmer 
-                  className="kitty-title mt-4 mb-2 text-center"
+              {/* Sticky header: image + title */}
+              <div className="flex flex-col items-center pt-6 pb-4 px-6">
+                {/* Image with blooming glow — clickable */}
+                <motion.div
+                  className="w-24 h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden cursor-pointer"
                   style={{
-                    fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
-                    lineHeight: '1.3',
-                    fontWeight: '800',
-                    color: getTitleColor()
+                    boxShadow: 'var(--shadow-bloom)',
+                    border: '2px solid rgba(255, 182, 210, 0.3)',
                   }}
-                  shimmerWidth={120}
-                  duration={2}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.4 }}
+                  onClick={() => setIsImageExpanded(true)}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <img
+                    src={poem.image}
+                    alt={poem.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </motion.div>
+
+                {/* Modal title */}
+                <motion.h2
+                  className="mt-4 mb-1 text-center"
+                  style={{
+                    fontFamily: "'Playfair Display', Georgia, serif",
+                    fontStyle: 'italic',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1.25rem, 3vw, 1.75rem)',
+                    color: 'var(--text-primary)',
+                  }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
                 >
                   {poem.title}
-                </TextShimmer>
-                
-                <div 
-                  className="text-xs md:text-sm font-inter opacity-70 text-center"
-                  style={{ color: isDarkMode ? '#94a3b8' : '#64748b' }}
+                </motion.h2>
+
+                <motion.div
+                  className="text-xs sakura-accent"
+                  style={{ color: 'var(--text-muted)' }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  {theme.name} • Tissue <span className="ml-1">❤️</span>
-                </div>
+                  {poem.theme.name} • with love
+                </motion.div>
               </div>
 
-              {/* Scrollable poem body */}
-              <div className="flex-1 overflow-y-auto px-6 py-6">
-                <pre 
-                  className="whitespace-pre-wrap font-inter text-[clamp(1rem,2vw,1.1rem)] leading-relaxed text-left"
-                  style={{ color: getTextColor() }}
-                >
-                  {poem.content}
-                </pre>
+              {/* Scrollable poem content — line-by-line staggered reveal */}
+              <div className="flex-1 overflow-y-auto px-6 py-4" style={{ minHeight: 0 }}>
+                {poemLines.map((line, i) => (
+                  <motion.p
+                    key={i}
+                    className="sakura-poem mb-2"
+                    style={{
+                      fontFamily: "'Lora', Georgia, serif",
+                      fontStyle: 'italic',
+                      fontSize: 'clamp(0.95rem, 2vw, 1.05rem)',
+                      lineHeight: 1.9,
+                      color: 'var(--text-secondary)',
+                    }}
+                    initial={{ opacity: 0, y: 8, filter: 'blur(2px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{
+                      delay: 0.3 + i * 0.08,
+                      duration: 0.4,
+                      ease: 'easeOut',
+                    }}
+                  >
+                    {line}
+                  </motion.p>
+                ))}
               </div>
 
-              {/* Bottom action bar */}
-              <div 
-                className="sticky bottom-0 border-t px-6 py-4 rounded-b-3xl"
-                style={{ 
-                  backgroundColor: getCardBackground(),
-                  borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div className="flex items-center justify-center space-x-8">
+              {/* Floating island action bar */}
+              <div className="px-6 py-4 flex-shrink-0" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
+                <motion.div
+                  className="sakura-glass-pill flex items-center justify-center gap-6 px-6 py-3 mx-auto"
+                  style={{ maxWidth: '200px' }}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.4 }}
+                >
                   <motion.button
-                    className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-pink-400 to-rose-500 shadow-xl border-2 border-white/40"
+                    className="w-11 h-11 rounded-full flex items-center justify-center relative"
+                    style={{
+                      background: isLiked
+                        ? 'linear-gradient(135deg, var(--accent-hot), #ff6b9d)'
+                        : isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                    }}
                     onClick={handleLike}
-                    whileHover={{ scale: 1.15, rotate: 10 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileTap={{ scale: 0.93 }}
                   >
-                    <motion.div
-                      animate={isLiked ? { scale: [1, 1.4, 1] } : {}}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <FiHeart className={`w-6 h-6 ${isLiked ? 'text-white fill-current drop-shadow-sm' : 'text-white/90'}`} />
-                    </motion.div>
+                    <FiHeart
+                      className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`}
+                      style={{ color: isLiked ? 'white' : 'var(--accent-hot)' }}
+                    />
+                    <HeartBurstParticles show={showHeartBurst} />
                   </motion.button>
-                  
-                  <motion.button
-                    className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 shadow-xl border-2 border-white/40"
-                    onClick={handlePlayPause}
-                    whileHover={{ scale: 1.15, rotate: -10 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <motion.div
-                      animate={isPlaying ? { scale: [1, 1.2, 1] } : {}}
-                      transition={{ duration: 0.5, repeat: isPlaying ? Infinity : 0 }}
+
+                  {audioReady && (
+                    <motion.button
+                      className="w-11 h-11 rounded-full flex items-center justify-center"
+                      style={{
+                        background: isPlaying
+                          ? 'linear-gradient(135deg, var(--accent-hot), #ff6b9d)'
+                          : isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                      }}
+                      onClick={handlePlayPause}
+                      whileTap={{ scale: 0.93 }}
                     >
                       {isPlaying ? (
-                        <FiPause className="w-6 h-6 text-white drop-shadow-sm" />
+                        <FiPause className="w-5 h-5" style={{ color: isPlaying ? 'white' : 'var(--accent-hot)' }} />
                       ) : (
-                        <FiPlay className="w-6 h-6 text-white drop-shadow-sm ml-0.5" />
+                        <FiPlay className="w-5 h-5 ml-0.5" style={{ color: 'var(--accent-hot)' }} />
                       )}
-                    </motion.div>
-                  </motion.button>
-                </div>
+                    </motion.button>
+                  )}
+                </motion.div>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Poem Card */}
+      {/* ═══════════════ MAIN POEM CARD ═══════════════ */}
       <motion.div
         className={`
-          group relative overflow-hidden rounded-3xl mx-auto w-full 
-          max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 
-          h-[500px] md:h-[550px] lg:h-[600px] 
-          transition-all duration-700 ease-out kitty-card
-          ${isActive 
-            ? 'scale-[1.02] shadow-2xl shadow-pink-500/30 ring-2 ring-pink-300' 
-            : 'hover:scale-[1.01] hover:shadow-xl shadow-lg'
-          }
+          group relative overflow-hidden mx-auto w-full
+          max-w-sm md:max-w-md lg:max-w-lg
+          transition-all duration-700 ease-out
         `}
-        style={{ background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.secondary} 100%)` }}
-        whileHover={{ 
+        style={{
+          borderRadius: 'var(--radius-card)',
+          background: isDarkMode
+            ? 'linear-gradient(135deg, rgba(255,182,210,0.08), rgba(255,100,150,0.04))'
+            : 'linear-gradient(135deg, rgba(255,182,210,0.18), rgba(255,100,150,0.08))',
+          backdropFilter: 'blur(32px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(200%)',
+          border: '1px solid rgba(255, 182, 210, 0.25)',
+          boxShadow: isActive
+            ? '0 20px 60px rgba(255,59,122,0.15), 0 0 30px rgba(255,59,122,0.1)'
+            : 'var(--shadow-card)',
+          isolation: 'isolate',
+        }}
+        initial={{ opacity: 0, y: 30, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{
+          duration: 0.6,
+          ease: [0.34, 1.56, 0.64, 1],
+        }}
+        whileHover={{
           y: -4,
           transition: { type: "spring", stiffness: 300, damping: 30 }
         }}
@@ -250,263 +382,258 @@ const PoemCard: React.FC<PoemCardProps> = ({
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
         onDragEnd={(_, { offset, velocity }) => {
-          const swipeThreshold = 50;
-          const swipeVelocityThreshold = 300;
-          
-          if (offset.x > swipeThreshold || velocity.x > swipeVelocityThreshold) {
-            // Swipe right - go to previous poem
-            onSwipeRight?.();
-          } else if (offset.x < -swipeThreshold || velocity.x < -swipeVelocityThreshold) {
-            // Swipe left - go to next poem
-            onSwipeLeft?.();
-          }
+          const threshold = 50;
+          const velThreshold = 300;
+          if (offset.x > threshold || velocity.x > velThreshold) onSwipeRight?.();
+          else if (offset.x < -threshold || velocity.x < -velThreshold) onSwipeLeft?.();
         }}
-        whileDrag={{ 
-          scale: 0.95,
-          transition: { type: "spring", stiffness: 300, damping: 30 }
-        }}
+        whileDrag={{ scale: 0.95 }}
         layout
       >
-        {/* Background gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/20 pointer-events-none" />
-        
-        {/* Floating heart animation */}
-        <AnimatePresence>
-          {showHeart && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 0] }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="text-6xl">❤️</div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Image Section */}
-        <div className="relative h-64 overflow-hidden">
+        {/* ─── Image Section ─── */}
+        <div className="relative h-60 md:h-64 overflow-hidden" style={{ borderRadius: 'var(--radius-image) var(--radius-image) 0 0' }}>
           <motion.div
-            className="absolute inset-0 cursor-zoom-in"
-            onClick={handleImageClick}
+            className="absolute inset-0 cursor-pointer"
             whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4 }}
+            onClick={() => setIsImageExpanded(true)}
           >
-            {poem.image ? (
-              <img
-                src={poem.image}
-                alt={poem.title}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
-                <span className="text-6xl opacity-50">🖼️</span>
-              </div>
-            )}
-            
-            {/* Shimmer overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
-            
-            {/* Floating action buttons - Always visible on desktop, hover on mobile */}
-            <div className="absolute top-2 md:top-4 right-2 md:right-4 flex flex-col space-y-2 md:space-y-3 opacity-0 group-hover:opacity-100 md:opacity-100 transition-all duration-500">
-              <motion.button
-                className="w-10 h-10 md:w-12 md:h-12 rounded-full shadow-xl flex items-center justify-center backdrop-blur-sm border border-white/40"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleLike();
-                }}
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                whileTap={{ scale: 0.85 }}
+            <img
+              src={poem.image}
+              alt={poem.title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              style={{ borderRadius: 'var(--radius-image) var(--radius-image) 0 0' }}
+            />
+
+            {/* Gradient overlay fading to card bg */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: isDarkMode
+                  ? 'linear-gradient(to bottom, transparent 50%, rgba(26,10,20,0.6) 100%)'
+                  : 'linear-gradient(to bottom, transparent 50%, rgba(255,240,245,0.6) 100%)',
+              }}
+            />
+
+            {/* Shimmer sweep overlay */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                animation: 'shimmerSweep 2s ease-in-out',
+              }}
+            />
+          </motion.div>
+
+          {/* Frosted category tag over bottom-left of image */}
+          <motion.div
+            className="absolute bottom-3 left-3 z-10 sakura-glass-pill px-3 py-1"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <span
+              className="sakura-accent text-[10px] md:text-xs font-medium"
+              style={{ color: isDarkMode ? 'var(--accent-sakura)' : 'var(--accent-hot)' }}
+            >
+              ✨ {poem.theme.name}
+            </span>
+          </motion.div>
+
+          {/* Floating action buttons (top-right) */}
+          <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+            {/* Like button */}
+            <motion.button
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center relative"
+              style={{
+                background: isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,182,210,0.3)',
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike();
+              }}
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.85 }}
+            >
+              <FiHeart
+                className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`}
                 style={{
-                  background: `linear-gradient(135deg, ${theme.colors.primary}90, ${theme.colors.secondary || theme.colors.primary}90)`,
-                  boxShadow: `0 4px 15px ${theme.colors.primary}40, 0 0 10px ${theme.colors.primary}20`
+                  color: 'var(--accent-hot)',
+                  ...(isLiked ? { filter: 'drop-shadow(0 0 4px rgba(255,59,122,0.5))' } : {}),
                 }}
-              >
-                <motion.div
-                  animate={isLiked ? { scale: [1, 1.4, 1] } : {}}
-                  transition={{ duration: 0.3 }}
-                >
-                  <FiHeart className={`w-4 h-4 md:w-5 md:h-5 ${isLiked ? 'text-white fill-current drop-shadow-sm' : 'text-white/90'}`} />
-                </motion.div>
-              </motion.button>
-              
+              />
+              {isLiked && (
+                <div className="absolute inset-0 rounded-full sakura-pulse-ring" />
+              )}
+              <HeartBurstParticles show={showHeartBurst} />
+            </motion.button>
+
+            {/* Play/Pause button — only show if audio loaded */}
+            {audioReady && (
               <motion.button
-                className="w-10 h-10 md:w-12 md:h-12 rounded-full shadow-xl flex items-center justify-center backdrop-blur-sm border border-white/40"
+                className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center"
+                style={{
+                  background: isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,182,210,0.3)',
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePlayPause();
                 }}
-                whileHover={{ scale: 1.2, rotate: -10 }}
+                whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.85 }}
-                style={{
-                  background: `linear-gradient(135deg, ${theme.colors.secondary || theme.colors.primary}90, ${theme.colors.primary}90)`,
-                  boxShadow: `0 4px 15px ${theme.colors.primary}40, 0 0 10px ${theme.colors.primary}20`
-                }}
               >
-                <motion.div
-                  animate={isPlaying ? { scale: [1, 1.2, 1] } : {}}
-                  transition={{ duration: 0.5, repeat: isPlaying ? Infinity : 0 }}
-                >
-                  {isPlaying ? (
-                    <FiPause className="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-sm" />
-                  ) : (
-                    <FiPlay className="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-sm ml-0.5" />
-                  )}
-                </motion.div>
+                {isPlaying ? (
+                  <div className="flex items-end gap-[2px] h-4">
+                    <div className="w-[3px] bg-[var(--accent-hot)] rounded-full" style={{ animation: 'waveBar1 0.6s ease-in-out infinite' }} />
+                    <div className="w-[3px] bg-[var(--accent-hot)] rounded-full" style={{ animation: 'waveBar2 0.5s ease-in-out infinite 0.1s' }} />
+                    <div className="w-[3px] bg-[var(--accent-hot)] rounded-full" style={{ animation: 'waveBar3 0.7s ease-in-out infinite 0.2s' }} />
+                  </div>
+                ) : (
+                  <FiPlay className="w-4 h-4 ml-0.5" style={{ color: 'var(--accent-hot)' }} />
+                )}
               </motion.button>
-            </div>
-          </motion.div>
+            )}
+          </div>
         </div>
 
-        {/* Content Section */}
-        <div className="relative p-4 sm:p-6 md:p-6 lg:p-8 h-[236px] md:h-[250px] lg:h-[280px] flex flex-col">
-          {/* Title */}
-          <TextShimmer 
-            className="kitty-title mb-2 sm:mb-3 line-clamp-2 text-center" 
+        {/* ─── Content Section ─── */}
+        <div className="relative p-5 md:p-6 flex flex-col gap-3">
+          {/* Title — staggered reveal */}
+          <motion.h3
             style={{
-              fontSize: 'clamp(1.1rem, 3vw, 1.75rem)',
-              lineHeight: '1.3',
-              fontWeight: '800',
-              color: isDarkMode ? '#ffffff' : '#1f2937',
-              textShadow: isDarkMode ? '0 2px 4px rgba(0, 0, 0, 0.8)' : '0 1px 2px rgba(255, 255, 255, 0.8)'
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 700,
+              fontSize: 'clamp(1.2rem, 3vw, 1.6rem)',
+              lineHeight: 1.3,
+              letterSpacing: '-0.02em',
+              color: 'var(--text-primary)',
             }}
-            shimmerWidth={120}
-            duration={2}
+            className="text-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.4, ease: 'easeOut' }}
           >
             {poem.title}
-          </TextShimmer>
-
-          {/* Theme indicator */}
-          <div className="flex items-center justify-center mb-3 sm:mb-4">
-            <motion.span 
-              className="text-xs sm:text-sm md:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg backdrop-blur-sm border border-white/30"
-              style={{ 
-                color: 'white',
-                background: `linear-gradient(135deg, ${theme.colors.primary}90, ${theme.colors.secondary}90)`,
-                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
-              }}
-              whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              ✨ {theme.name} • Tissue 💖 ✨
-            </motion.span>
-          </div>
+          </motion.h3>
 
           {/* Content preview */}
-          <div className="flex-1 mb-3 sm:mb-4 overflow-hidden">
-            <p 
-              className="text-sm leading-relaxed line-clamp-4 font-medium text-center"
-              style={{ 
-                color: isDarkMode ? '#e2e8f0' : '#475569',
-                textShadow: isDarkMode ? '0 1px 2px rgba(0, 0, 0, 0.6)' : 'none'
-              }}
-            >
-              {isContentExpanded ? poem.content : truncatedContent}
-            </p>
-          </div>
+          <motion.p
+            className="sakura-poem text-center"
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              fontStyle: 'italic',
+              fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
+              lineHeight: 1.9,
+              color: 'var(--text-secondary)',
+              opacity: 0.75,
+            }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 0.75, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4, ease: 'easeOut' }}
+          >
+            {isContentExpanded ? poem.content : truncatedContent}
+          </motion.p>
 
-          {/* Action buttons */}
-          <div className="flex items-center justify-between mt-auto pt-2">
-            <div className="flex items-center">
-              {poem.content.length > 180 && (
-                <MagicalButton
-                  onClick={() => setIsContentExpanded(!isContentExpanded)}
-                  variant="magical"
-                  size="sm"
-                  className="px-3 md:px-6 py-2 md:py-3 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 border border-white/30"
-                  style={{
-                    background: `linear-gradient(135deg, ${theme.colors.primary}90, ${theme.colors.secondary || theme.colors.primary}90, ${theme.colors.primary}90)`,
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: `0 4px 20px ${theme.colors.primary}30, 0 0 15px ${theme.colors.primary}20`
-                  }}
-                  ripple={true}
-                  sparkles={true}
-                >
-                  <span className="flex items-center space-x-1 md:space-x-2">
-                    <span className="text-xs md:text-sm font-bold">
-                      {isContentExpanded ? 'Show Less' : 'Read More'}
-                    </span>
-                    <motion.div
-                      animate={{ rotate: isContentExpanded ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <FiChevronDown className="w-3 h-3 md:w-4 md:h-4" />
-                    </motion.div>
-                  </span>
-                </MagicalButton>
-              )}
-            </div>
-            
+          {/* Action row */}
+          <div className="flex items-center justify-between mt-1">
+            {/* Read More — magnetic hover pill */}
+            {poem.content.length > 180 && (
+              <motion.button
+                ref={readMoreRef}
+                onClick={() => setIsContentExpanded(!isContentExpanded)}
+                onMouseMove={handleReadMoreMouseMove}
+                onMouseLeave={handleReadMoreMouseLeave}
+                className="relative overflow-hidden px-5 py-2 rounded-full text-white font-medium text-xs md:text-sm sakura-accent"
+                style={{
+                  background: 'linear-gradient(135deg, var(--accent-hot), #ff6b9d)',
+                  boxShadow: '0 4px 20px rgba(255,59,122,0.3)',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  willChange: 'transform',
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="relative z-10 flex items-center gap-1.5">
+                  {isContentExpanded ? 'Show Less' : 'Read More'}
+                  <motion.span
+                    animate={{ rotate: isContentExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FiChevronDown className="w-3.5 h-3.5" />
+                  </motion.span>
+                </span>
+              </motion.button>
+            )}
+
+            {/* Expand button — frosted glass circle with glow ring */}
             <motion.button
               onClick={() => setIsExpanded(true)}
-              className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full shadow-lg hover:shadow-xl border border-white/40 backdrop-blur-sm"
-              whileHover={{ scale: 1.15, rotate: 5 }}
-              whileTap={{ scale: 0.9 }}
-              style={{ 
-                background: `linear-gradient(135deg, ${theme.colors.primary}80, ${theme.colors.secondary || theme.colors.primary}80)`,
-                borderColor: `${primaryTextColor}30`,
-                boxShadow: `0 4px 15px ${theme.colors.primary}40, 0 0 10px ${theme.colors.primary}20`
+              className="relative flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full ml-auto"
+              style={{
+                background: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(255,59,122,0.08)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 182, 210, 0.3)',
               }}
+              whileHover={{
+                scale: 1.1,
+                boxShadow: '0 0 0 4px rgba(255,59,122,0.2)',
+              }}
+              whileTap={{ scale: 0.9 }}
             >
-              <FiMaximize2 className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-white drop-shadow-sm" />
+              <FiMaximize2 className="w-4 h-4 md:w-5 md:h-5" style={{ color: 'var(--accent-hot)' }} />
             </motion.button>
           </div>
         </div>
 
-        {/* Expanded image overlay */}
+        {/* ─── Expanded Image Overlay ─── */}
         <AnimatePresence>
           {isImageExpanded && (
             <motion.div
-              className="fixed inset-0 z-[60] backdrop-blur-md flex items-center justify-center p-4"
-              style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
+              key="image-fullscreen-overlay"
+              className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+              style={{
+                background: 'rgba(0,0,0,0.85)',
+                backdropFilter: 'blur(20px)',
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsImageExpanded(false)}
             >
-              {/* Close button for image */}
               <motion.button
-                className="absolute top-6 right-6 z-10 w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 shadow-2xl flex items-center justify-center border-2 border-white/50"
+                className="absolute top-6 right-6 z-10 w-12 h-12 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                }}
                 onClick={() => setIsImageExpanded(false)}
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <FiX className="w-7 h-7 text-white drop-shadow-lg" />
+                <FiX className="w-6 h-6 text-white" />
               </motion.button>
 
-              <motion.div
-                className="relative max-w-[95vw] max-h-[95vh] flex items-center justify-center"
+              <motion.img
+                src={poem.image}
+                alt={poem.title}
+                className="max-w-full max-h-full object-contain rounded-2xl"
+                style={{ maxWidth: '95vw', maxHeight: '90vh' }}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
-              >
-                {poem.image ? (
-                  <img
-                    src={poem.image}
-                    alt={poem.title}
-                    className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl"
-                    style={{ 
-                      width: 'auto', 
-                      height: 'auto',
-                      maxWidth: '95vw',
-                      maxHeight: '95vh'
-                    }}
-                  />
-                ) : (
-                  <div className="w-96 h-96 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center rounded-2xl shadow-2xl">
-                    <span className="text-8xl opacity-50">🖼️</span>
-                  </div>
-                )}
-              </motion.div>
+              />
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
-    </AnimatePresence>
+    </>
   );
 };
 

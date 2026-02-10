@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeSwitcher } from './components/theme-switcher';
 import { AnimatedBackground } from './components/ui/animated-gradient-background';
@@ -18,27 +18,36 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentPoemIndex, setCurrentPoemIndex] = useState(0);
-  
+
   const currentPoem = poems[currentPoemIndex];
   const { currentTheme, getThemeCSS } = useThemeSystem(currentPoemIndex);
   const { canvasRef, addBurstParticles } = useMagicalParticles(!showSplash, currentTheme);
 
+  // Mouse parallax — track mouse position as CSS custom properties
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const x = ((e.clientX / window.innerWidth) * 100).toFixed(1);
+    const y = ((e.clientY / window.innerHeight) * 100).toFixed(1);
+    document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+    document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [handleMouseMove]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsTransitioning(true);
-      // Delay the actual content switch for smoother transition
       setTimeout(() => {
         setShowSplash(false);
-      }, 800); // Give time for exit animation
-    }, 5000); // Changed to 5 seconds for the mesmerizing experience
-
+      }, 800);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 
   const handlePoemChange = (newIndex: number) => {
     setCurrentPoemIndex(newIndex);
-    
-    // Add magical particle burst on poem change
     setTimeout(() => {
       if (addBurstParticles) {
         addBurstParticles(window.innerWidth / 2, window.innerHeight / 2, 15);
@@ -57,95 +66,100 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div 
+      <div
         style={getThemeCSS()}
-        className="min-h-screen w-full overflow-x-hidden"
+        className="min-h-screen w-full overflow-x-hidden sakura-grain sakura-bokeh"
       >
-        {/* Hello Kitty Decorations */}
+        {/* Mouse parallax atmospheric layer */}
+        {!showSplash && <div className="sakura-parallax-layer" />}
+
+        {/* Sakura petal decorations */}
         {!showSplash && <HelloKittyDecorations />}
-        
+
         {/* Magical cursor */}
         <MagicalCursor />
-        
+
         {/* Magical particle canvas */}
         <canvas
           ref={canvasRef}
           className="fixed inset-0 pointer-events-none z-40"
           style={{ mixBlendMode: 'screen' }}
         />
-        
+
         <AnimatePresence mode="wait">
           {showSplash ? (
-            <SplashScreen 
-              key="splash" 
-              isTransitioning={isTransitioning} 
+            <SplashScreen
+              key="splash"
+              isTransitioning={isTransitioning}
               onSkip={handleSkipSplash}
             />
           ) : (
             <motion.div
               key="main-app"
-              initial={{ 
+              initial={{
                 opacity: 0,
-                scale: 0.8,
+                scale: 0.95,
                 filter: "blur(10px)",
-                rotateY: -15
               }}
-              animate={{ 
+              animate={{
                 opacity: 1,
                 scale: 1,
                 filter: "blur(0px)",
-                rotateY: 0
               }}
-              transition={{ 
+              transition={{
                 duration: 1.2,
                 ease: [0.25, 0.46, 0.45, 0.94],
-                staggerChildren: 0.1
               }}
             >
-            <AnimatedBackground currentPoem={currentPoem}>
-              <motion.div
-                className="min-h-screen relative overflow-hidden"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                {/* Magical meteors for ambient effect - themed colors */}
-                <motion.div 
-                  className="absolute inset-0 overflow-hidden pointer-events-none"
+              <AnimatedBackground currentPoem={currentPoem}>
+                <motion.div
+                  className="min-h-screen relative overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 1 }}
+                  transition={{ duration: 1, delay: 0.3 }}
                 >
-                  <Meteors number={15} />
-                </motion.div>
-
-                <div className="relative min-h-screen z-10">
-                  <motion.main 
-                    className="container mx-auto relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-6 md:pt-8 pb-32 md:pb-20 z-10 max-w-full overflow-hidden"
-                    initial={{ y: 50, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.8 }}
-                  >
-                    <Header currentPoem={currentPoem} />
-                    <PoemPlayer onPoemChange={handlePoemChange} />
-                  </motion.main>
-
+                  {/* Ambient meteors */}
                   <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 1, duration: 0.8, type: "spring" }}
+                    className="absolute inset-0 overflow-hidden pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 1 }}
                   >
-                    <KittyDecoration currentPoem={currentPoem} />
+                    <Meteors number={10} />
                   </motion.div>
-                </div>
-              </motion.div>
-            </AnimatedBackground>
+
+                  <div className="relative min-h-screen z-10">
+                    <motion.main
+                      className="container mx-auto relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-6 md:pt-8 pb-32 md:pb-20 z-10 max-w-full overflow-hidden"
+                      initial={{ y: 50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.4, duration: 0.8 }}
+                    >
+                      <Header currentPoem={currentPoem} />
+                      <PoemPlayer onPoemChange={handlePoemChange} />
+                    </motion.main>
+
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 1, duration: 0.8, type: "spring" }}
+                    >
+                      <KittyDecoration currentPoem={currentPoem} />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </AnimatedBackground>
             </motion.div>
           )}
         </AnimatePresence>
-        
-        {/* Fixed theme switcher - only show when not in splash screen */}
-        {!showSplash && <ThemeSwitcher currentPoemIndex={currentPoemIndex} onPoemChange={handlePoemChange} />}
+
+        {/* Theme toggle — only when not in splash */}
+        {!showSplash && (
+          <ThemeSwitcher
+            currentPoemIndex={currentPoemIndex}
+            onPoemChange={handlePoemChange}
+          />
+        )}
       </div>
     </ErrorBoundary>
   );

@@ -1,141 +1,87 @@
 'use client';
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 
-interface FloatingElement {
+interface SakuraPetal {
   id: number;
-  emoji: string;
-  x: number;
-  y: number;
-  scale: number;
+  left: number;
+  size: number;
+  delay: number;
   duration: number;
+  rotation: number;
+  variant: 'a' | 'b';
 }
 
-export const HelloKittyDecorations = () => {
-  const [elements, setElements] = useState<FloatingElement[]>([]);
+// Inline SVG petal path — no emojis, pure CSS SVG shapes
+const PetalSVG = ({ size, variant }: { size: number; variant: 'a' | 'b' }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 30 30"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{ filter: 'drop-shadow(0 2px 4px rgba(255,183,213,0.3))' }}
+  >
+    {variant === 'a' ? (
+      <path
+        d="M15 2C15 2 8 6 6 12C4 18 8 24 15 28C22 24 26 18 24 12C22 6 15 2 15 2Z"
+        fill="var(--accent-sakura)"
+        fillOpacity="0.7"
+      />
+    ) : (
+      <path
+        d="M15 3C12 5 6 10 7 16C8 22 13 26 15 27C17 26 22 22 23 16C24 10 18 5 15 3Z"
+        fill="var(--accent-sakura)"
+        fillOpacity="0.5"
+      />
+    )}
+  </svg>
+);
 
-  const emojis = ['🌸', '💖', '✨', '🎀', '🐱', '💕', '🌺', '🦋', '🌟', '💫'];
+export const HelloKittyDecorations = () => {
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Create floating elements
-    const createElements = () => {
-      const newElements: FloatingElement[] = [];
-      for (let i = 0; i < 8; i++) {
-        newElements.push({
-          id: i,
-          emoji: emojis[Math.floor(Math.random() * emojis.length)],
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          scale: 0.5 + Math.random() * 0.8,
-          duration: 8 + Math.random() * 12,
-        });
-      }
-      setElements(newElements);
-    };
-
-    createElements();
-    const interval = setInterval(() => {
-      createElements();
-    }, 15000); // Refresh elements every 15 seconds
-
-    return () => clearInterval(interval);
+    // Delay slightly to avoid hydration issues
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
+  // Generate 16 petals with varying properties, memoized for performance
+  const petals: SakuraPetal[] = useMemo(() => {
+    return Array.from({ length: 16 }, (_, i) => ({
+      id: i,
+      left: (i * 6.25) + Math.random() * 5, // Spread across viewport width
+      size: 12 + Math.random() * 14, // 12-26px
+      delay: Math.random() * 12, // Random start delay
+      duration: 8 + Math.random() * 7, // 8-15s fall time
+      rotation: Math.random() * 360,
+      variant: (Math.random() > 0.5 ? 'a' : 'b') as 'a' | 'b',
+    }));
+  }, []);
+
+  if (!isVisible) return null;
+
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {elements.map((element) => (
-        <motion.div
-          key={element.id}
-          className="absolute text-2xl opacity-30"
-          initial={{
-            x: element.x,
-            y: window.innerHeight + 50,
-            scale: 0,
-            rotate: 0,
-            opacity: 0,
-          }}
-          animate={{
-            y: -100,
-            scale: element.scale,
-            rotate: 360,
-            opacity: [0, 0.6, 0.4, 0],
-          }}
-          transition={{
-            duration: element.duration,
-            ease: "easeOut",
-            times: [0, 0.1, 0.8, 1],
-          }}
+    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden" aria-hidden="true">
+      {petals.map((petal) => (
+        <div
+          key={petal.id}
+          className="sakura-petal"
           style={{
-            left: element.x,
+            left: `${petal.left}%`,
+            top: '-30px',
+            animation: `${petal.variant === 'a' ? 'sakuraDrift' : 'sakuraDriftAlt'} ${petal.duration}s linear ${petal.delay}s infinite`,
+            transform: `rotate(${petal.rotation}deg)`,
           }}
         >
-          {element.emoji}
-        </motion.div>
+          <div
+            style={{
+              animation: `sakuraSway ${3 + Math.random() * 2}s ease-in-out ${petal.delay}s infinite`,
+            }}
+          >
+            <PetalSVG size={petal.size} variant={petal.variant} />
+          </div>
+        </div>
       ))}
-      
-      {/* Corner decorations */}
-      <motion.div
-        className="absolute top-8 left-8 text-6xl opacity-20"
-        animate={{
-          rotate: [0, 10, -10, 0],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        🌸
-      </motion.div>
-      
-      <motion.div
-        className="absolute top-8 right-8 text-5xl opacity-20"
-        animate={{
-          rotate: [0, -15, 15, 0],
-          y: [0, -10, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-      >
-        🎀
-      </motion.div>
-      
-      <motion.div
-        className="absolute bottom-8 left-8 text-4xl opacity-20"
-        animate={{
-          scale: [1, 1.2, 1],
-          rotate: [0, 5, -5, 0],
-        }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      >
-        💖
-      </motion.div>
-      
-      <motion.div
-        className="absolute bottom-8 right-8 text-5xl opacity-20"
-        animate={{
-          y: [0, -15, 0],
-          rotate: [0, 10, -10, 0],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5,
-        }}
-      >
-        🐱
-      </motion.div>
     </div>
   );
 };

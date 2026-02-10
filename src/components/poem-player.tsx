@@ -4,7 +4,6 @@ import { poems } from '../data/poems';
 import PoemCard from './poem-card';
 import PoemNavigation from './poem-navigation';
 import { Confetti, type ConfettiRef } from './ui/confetti';
-import { MagicalButton } from './ui/magical-button';
 import { useMagicalSounds } from '../hooks/useMagicalSounds';
 import useSound from 'use-sound';
 
@@ -22,13 +21,12 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
   const [playCelebration] = useSound(celebrationSoundUrl, { volume: 0.4 });
   const confettiRef = useRef<ConfettiRef>(null);
   const currentPoem = poems[currentPoemIndex];
-  
-  // Magical sounds
-  const { 
-    playMagicalClick, 
-    playMagicalSuccess, 
+
+  const {
+    playMagicalClick,
+    playMagicalSuccess,
     playMagicalTransition,
-    playMagicalSparkle 
+    playMagicalSparkle
   } = useMagicalSounds();
 
   const handleChangePoemIndex = (newIndex: number) => {
@@ -36,8 +34,7 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
     playMagicalTransition();
     setCurrentPoemIndex(newIndex);
     onPoemChange(newIndex);
-    
-    // Add confetti celebration for poem transitions
+
     setTimeout(() => {
       playCelebration();
       playMagicalSuccess();
@@ -51,19 +48,16 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
   }
 
   const handleSwipeLeft = () => {
-    // Swipe left = next poem
     const nextIndex = (currentPoemIndex + 1) % poems.length;
     handleChangePoemIndex(nextIndex);
   }
 
   const handleSwipeRight = () => {
-    // Swipe right = previous poem  
     const prevIndex = currentPoemIndex === 0 ? poems.length - 1 : currentPoemIndex - 1;
     handleChangePoemIndex(prevIndex);
   }
 
   const handlePoemCardClick = () => {
-    // Add subtle confetti when clicking on poem card
     playMagicalClick();
     playMagicalSparkle();
     confettiRef.current?.fire({
@@ -75,24 +69,24 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl mx-auto relative px-2 sm:px-4 md:px-6"
-      initial={{ 
-        opacity: 0, 
-        y: 30, 
+      initial={{
+        opacity: 0,
+        y: 30,
         scale: 0.95,
         filter: "blur(8px)"
       }}
-      animate={{ 
-        opacity: 1, 
-        y: 0, 
+      animate={{
+        opacity: 1,
+        y: 0,
         scale: 1,
         filter: "blur(0px)"
       }}
-      transition={{ 
-        duration: 0.8, 
-        delay: 0.6, 
-        ease: [0.25, 0.46, 0.45, 0.94] 
+      transition={{
+        duration: 0.8,
+        delay: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }}
     >
       {/* Confetti canvas */}
@@ -102,46 +96,13 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
         manualstart={true}
       />
 
-      {/* Magical entrance sparkles */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 1 }}
-      >
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-yellow-300 text-sm pointer-events-none select-none"
-            style={{
-              left: `${20 + (i * 15)}%`,
-              top: `${15 + (i * 10)}%`,
-            }}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-              y: [0, -30],
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 2,
-              ease: "easeOut",
-              delay: 0.8 + (i * 0.1),
-            }}
-          >
-            ✨
-          </motion.div>
-        ))}
-      </motion.div>
-
       {currentPoem ? (
-        <motion.div 
+        <motion.div
           onClick={handlePoemCardClick}
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ 
-            delay: 0.7, 
+          transition={{
+            delay: 0.7,
             duration: 0.6,
             type: "spring",
             stiffness: 100
@@ -166,13 +127,14 @@ const PoemPlayer: React.FC<PoemPlayerProps> = ({ onPoemChange }) => {
         </motion.p>
       )}
 
+      {/* Navigation — always visible below the card */}
       {!isExpanded && (
-        <motion.div 
-          className='absolute w-full left-0 -bottom-16 sm:-bottom-18 md:-bottom-20 z-20 poem-navigation-wrapper'
-          initial={{ y: 50, opacity: 0 }}
+        <motion.div
+          className='w-full z-20 poem-navigation-wrapper'
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ 
-            delay: 1, 
+          transition={{
+            delay: 1,
             duration: 0.6,
             ease: "easeOut"
           }}
